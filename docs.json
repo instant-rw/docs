@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "sequoia",
+  "theme": "palm",
   "name": "Instant Cloud",
   "colors": {
     "primary": "#007A55",
@@ -37,8 +37,8 @@
     }
   },
   "logo": {
-    "light": "/images/InstantIconLogo41(1).png",
-    "dark": "/images/InstantIconLogo41(1).png"
+    "light": "/images/LogoDark.png",
+    "dark": "/images/Component2.png"
   },
   "navbar": {
     "links": [
@@ -67,13 +67,16 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/i",
+      "x": "https://x.com/instantrw",
+      "github": "https://github.com/instant-rw",
       "linkedin": "https://linkedin.com/company/instant-rw",
       "instagram": "https://instagram.com/instant.rw"
     }
   },
   "thumbnails": {
     "background": "/images/og-image.png"
+  },
+  "fonts": {
+    "family": "Inter"
   }
 }
