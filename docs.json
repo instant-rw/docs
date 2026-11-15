@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "palm",
+  "theme": "aspen",
   "name": "Instant Cloud",
   "colors": {
     "primary": "#007A55",
@@ -75,8 +75,5 @@
   },
   "thumbnails": {
     "background": "/images/og-image.png"
-  },
-  "fonts": {
-    "family": "Inter"
   }
 }
