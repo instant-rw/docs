@@ -1,13 +1,16 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "theme": "sequoia",
+  "name": "Instant Cloud",
   "colors": {
-    "primary": "#16A34A",
+    "primary": "#007A55",
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "/favicon.svg",
+  "favicon": {
+    "light": "/images/android-chrome-512x512.png",
+    "dark": "/images/android-chrome-512x512.png"
+  },
   "navigation": {
     "pages": [
       {
@@ -34,20 +37,20 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/images/InstantIconLogo41(1).png",
+    "dark": "/images/InstantIconLogo41(1).png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@mintlify.com"
+        "href": "mailto:support@instant.rw"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "href": "https://instant.rw/dashboard"
     }
   },
   "contextual": {
@@ -65,8 +68,12 @@
   "footer": {
     "socials": {
       "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/i",
+      "linkedin": "https://linkedin.com/company/instant-rw",
+      "instagram": "https://instagram.com/instant.rw"
     }
+  },
+  "thumbnails": {
+    "background": "/images/og-image.png"
   }
 }
