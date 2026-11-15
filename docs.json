@@ -19,6 +19,32 @@
           "index",
           "quickstart"
         ]
+      },
+      {
+        "group": "AI agents",
+        "pages": [
+          "agents/overview",
+          "agents/connect",
+          "agents/tools"
+        ]
+      },
+      {
+        "group": "CLI",
+        "pages": [
+          "cli/overview",
+          "cli/deploy-a-folder"
+        ]
+      },
+      {
+        "group": "API",
+        "pages": [
+          "api/overview",
+          "api/tokens",
+          {
+            "group": "Reference",
+            "openapi": "api-reference/openapi.json"
+          }
+        ]
       }
     ],
     "global": {

@@ -1,0 +1,63 @@
+---
+title: "API"
+description: "Base URL, authentication, organization, errors and rate limits of the Instant Cloud API."
+---
+
+The API is JSON over HTTPS. Everything the dashboard, the CLI and the [MCP tools](/agents/tools) do with apps, deployments, databases, buckets and domains goes through it.
+
+| | |
+| --- | --- |
+| Base URL | `https://api.instant.rw/v1` |
+| OpenAPI document | `https://api.instant.rw/v1/openapi.json` |
+| Rate limit | 600 requests per minute per credential |
+
+## Authenticate
+
+Send a credential as a bearer token. Use an [API token](/api/tokens), or the access token from `instant login`.
+
+```sh
+curl https://api.instant.rw/v1/me \
+  -H "Authorization: Bearer inst_…"
+```
+
+## Choose the organization
+
+An API token or MCP connection is tied to one organization, so you send nothing extra. A CLI sign-in works in all your organizations, so each request names one in a header, by ID or slug:
+
+```text
+x-instant-organization: my-team
+```
+
+## Errors
+
+A failed request returns a status code and a body like this:
+
+```json
+{
+  "error": {
+    "code": "payment_required",
+    "message": "The Free plan's credits are used up. Upgrade or add credit to continue.",
+    "dashboardUrl": "https://app.instant.rw/dashboard/billing"
+  }
+}
+```
+
+`dashboardUrl` is included when the fix is in the dashboard, such as billing. The message is written for people and is safe to show as is.
+
+| Code | Meaning |
+| --- | --- |
+| `bad_request` | The request is malformed or a value is invalid |
+| `unauthorized` | The credential is missing, expired or revoked |
+| `payment_required` | The organization is out of credits |
+| `forbidden` | The credential's access does not allow this |
+| `plan_limit` | The plan's limit is reached |
+| `not_found` | The resource does not exist in this organization |
+| `conflict` | The resource is in a state that does not allow this |
+| `too_large` | The request or upload is over the size limit |
+| `rate_limited` | Over 600 requests per minute; wait and retry |
+| `unavailable` | Temporarily unavailable; retry |
+| `internal` | Something failed on Instant's side |
+
+## API reference
+
+The pages under Reference are generated from the OpenAPI document. Each operation's ID is also the name of its [MCP tool](/agents/tools).

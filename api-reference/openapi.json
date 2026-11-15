@@ -1,0 +1,4083 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Instant API",
+    "version": "1.0.0",
+    "description": "Manage Instant Cloud apps, deployments, databases, domains and buckets."
+  },
+  "servers": [
+    {
+      "url": "https://api.instant.rw/v1"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "An access token from `instant login` or an API token (inst_\u2026)."
+      }
+    }
+  },
+  "paths": {
+    "/me": {
+      "get": {
+        "operationId": "whoami",
+        "summary": "Who am I",
+        "description": "The signed-in person, the organization this connection acts in, and whether it can make changes (access `write`) or only read (`read`). Call it first to know where you are.",
+        "x-access": "read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations": {
+      "get": {
+        "operationId": "list_organizations",
+        "summary": "List organizations",
+        "description": "Organizations this connection can act in, with your role in each. An MCP connection and an API token work in one organization; the CLI can switch between all of yours.",
+        "x-access": "read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/regions": {
+      "get": {
+        "operationId": "list_regions",
+        "summary": "List regions",
+        "description": "Regions apps, databases and buckets can run in. Pass a region's `code` when creating one; leave it out for the default region.",
+        "x-access": "read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usage": {
+      "get": {
+        "operationId": "get_usage",
+        "summary": "Get plan and usage",
+        "description": "The organization's plan, credit balance and billing state. Check it before creating large resources: creating anything fails while the organization is out of credits or over its plan's limits.",
+        "x-access": "read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps": {
+      "get": {
+        "operationId": "list_apps",
+        "summary": "List apps",
+        "description": "Apps in the organization with their URL, status, source (a GitHub repository or uploaded folders) and latest deployment.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Filter by name or repository",
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "create_app",
+        "summary": "Create an app",
+        "description": "Creates an app. With source `github` (the default) it builds `repository` on every push to `branch`, and the first deploy starts at once. With source `upload` there is no repository: deploy a local folder by running `instant deploy` in it (the Instant CLI). Every app gets an HTTPS URL on its own subdomain. Build and start commands are detected from the code when left out.",
+        "x-access": "write",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100,
+                    "description": "Shown in the dashboard; the subdomain is made from it"
+                  },
+                  "source": {
+                    "default": "github",
+                    "type": "string",
+                    "enum": [
+                      "github",
+                      "upload"
+                    ]
+                  },
+                  "repository": {
+                    "description": "owner/repo on GitHub, required for source github",
+                    "type": "string",
+                    "pattern": "^[\\w.-]+\\/[\\w.-]+$"
+                  },
+                  "branch": {
+                    "description": "Branch to deploy; defaults to the repository's default branch",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "rootDirectory": {
+                    "description": "Folder of the app inside the repository, for monorepos",
+                    "type": "string",
+                    "maxLength": 255
+                  },
+                  "buildCommand": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "startCommand": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "region": {
+                    "description": "Region code from list_regions",
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "object",
+                    "properties": {
+                      "vcpu": {
+                        "type": "number",
+                        "minimum": 0.25,
+                        "maximum": 48,
+                        "description": "vCPUs for each instance: 0.25, 0.5, 1, 2\u2026"
+                      },
+                      "memoryMb": {
+                        "type": "integer",
+                        "minimum": 256,
+                        "maximum": 49152,
+                        "description": "Memory for each instance in MB: 512, 1024\u2026"
+                      },
+                      "replicas": {
+                        "default": 1,
+                        "description": "How many instances serve the app",
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 10
+                      }
+                    },
+                    "required": [
+                      "vcpu",
+                      "memoryMb"
+                    ],
+                    "description": "Leave out for the smallest size, 0.25 vCPU and 512 MB"
+                  },
+                  "variables": {
+                    "description": "Environment variables, KEY: value",
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "pattern": "^[A-Z_][A-Z0-9_]*$"
+                    },
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "deploy": {
+                    "default": true,
+                    "description": "Start the first deploy now (GitHub apps only)",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}": {
+      "get": {
+        "operationId": "get_app",
+        "summary": "Get an app",
+        "description": "One app: URL, domains, size, build settings, source and its latest deployment.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug (as shown by list_apps) or its id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_app",
+        "summary": "Change an app's settings",
+        "description": "Renames an app or changes how it is built: branch, root directory, build and start commands, and whether pushes deploy automatically. Pass null to go back to the detected command. Changes apply on the next deploy.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug (as shown by list_apps) or its id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "branch": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "rootDirectory": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "buildCommand": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 500
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "startCommand": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 500
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "autoDeploy": {
+                    "type": "boolean"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/scale": {
+      "post": {
+        "operationId": "scale_app",
+        "summary": "Resize an app",
+        "description": "Changes the vCPUs and memory of each instance and the number of instances. A new instance count applies at once; a new CPU or memory size applies on the next deploy (`requiresRedeploy`). Bigger sizes cost more per hour.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug (as shown by list_apps) or its id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "vcpu": {
+                    "type": "number",
+                    "minimum": 0.25,
+                    "maximum": 48
+                  },
+                  "memoryMb": {
+                    "type": "integer",
+                    "minimum": 256,
+                    "maximum": 49152
+                  },
+                  "replicas": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/pause": {
+      "post": {
+        "operationId": "pause_app",
+        "summary": "Pause an app",
+        "description": "Stops the app so it no longer serves requests or costs anything. Its settings, domains and deployments are kept; resume it any time.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug (as shown by list_apps) or its id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/resume": {
+      "post": {
+        "operationId": "resume_app",
+        "summary": "Resume an app",
+        "description": "Starts a paused app again with its last deployment.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug (as shown by list_apps) or its id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/github/repositories": {
+      "get": {
+        "operationId": "list_repositories",
+        "summary": "List GitHub repositories",
+        "description": "GitHub repositories Instant can build, from the accounts where you installed the Instant GitHub app. Use one as `repository` in create_app.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Filter by name",
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/deployments": {
+      "post": {
+        "operationId": "deploy_app",
+        "summary": "Deploy an app",
+        "description": "Starts a deployment and returns at once; follow it with get_deployment or get_build_logs. A GitHub app builds the head of its branch, or `commit` when given. An app without a repository rebuilds its last uploaded folder. To deploy local files, run `instant deploy` in the project folder instead (the Instant CLI uploads them).",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "commit": {
+                    "description": "Git commit to deploy; defaults to the branch head",
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{7,40}$"
+                  },
+                  "uploadId": {
+                    "description": "Set by the CLI after uploading a folder",
+                    "type": "string"
+                  },
+                  "message": {
+                    "description": "Shown instead of a commit message for an uploaded folder",
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "git": {
+                    "description": "Git state of an uploaded folder, sent by the CLI",
+                    "type": "object",
+                    "properties": {
+                      "sha": {
+                        "type": "string",
+                        "maxLength": 64
+                      },
+                      "branch": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "dirty": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_deployments",
+        "summary": "List deployments",
+        "description": "An app's deployments, newest first, with status, commit or upload, and why a failed one failed.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/uploads": {
+      "post": {
+        "operationId": "create_upload",
+        "summary": "Upload a folder",
+        "description": "Returns a URL to PUT a gzipped tarball of a project folder to (at most 100 MB). Then call deploy_app with the upload's id. The CLI does both for you.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "bytes": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{64}$"
+                  }
+                },
+                "required": [
+                  "bytes",
+                  "sha256"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deployments/{deployment}": {
+      "get": {
+        "operationId": "get_deployment",
+        "summary": "Get a deployment",
+        "description": "One deployment's status and timing. Status moves queued \u2192 building \u2192 deploying \u2192 active; failed carries a reason and message. Poll it every 10\u201320 seconds while a deploy runs.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "deployment",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The deployment id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deployments/{deployment}/logs": {
+      "get": {
+        "operationId": "get_build_logs",
+        "summary": "Get build and deploy logs",
+        "description": "The deployment's log: build output, then the app's output while it started. The last `limit` lines come back; a failed build's error is usually near the end.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "deployment",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The deployment id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 300,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deployments/{deployment}/fix": {
+      "get": {
+        "operationId": "get_build_fix",
+        "summary": "Get fix suggestions for a failed build",
+        "description": "For a failed deployment, what Instant recognised in the log (a missing variable, a wrong start command, a lockfile problem\u2026) and how to fix it. Empty when nothing known matched; then read get_build_logs.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "deployment",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The deployment id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deployments/{deployment}/cancel": {
+      "post": {
+        "operationId": "cancel_deployment",
+        "summary": "Cancel a deployment",
+        "description": "Stops a deployment that is still queued, building or deploying. The app keeps serving its current version.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "deployment",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The deployment id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/rollback": {
+      "post": {
+        "operationId": "rollback_app",
+        "summary": "Roll back an app",
+        "description": "Deploys an earlier deployment's code again (its commit, or its uploaded folder). Find one with list_deployments.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "deployment": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The earlier deployment to go back to"
+                  }
+                },
+                "required": [
+                  "deployment"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/logs": {
+      "get": {
+        "operationId": "get_runtime_logs",
+        "summary": "Get an app's runtime logs",
+        "description": "What the running app printed, newest last, across all its instances. Pass `before` (the `cursor` of the oldest line you have) to read further back. Use it to debug errors after a deploy went live.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Cursor of the oldest line already read",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/metrics": {
+      "get": {
+        "operationId": "get_app_metrics",
+        "summary": "Get an app's metrics",
+        "description": "CPU (cores), memory (MB), network (bytes per second) and restarts for an app over a window, with its limits. A peak near the memory limit or restarts above zero explain crashes; raise the size with scale_app.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          },
+          {
+            "name": "window",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": "1h",
+              "type": "string",
+              "enum": [
+                "1h",
+                "6h",
+                "24h",
+                "7d",
+                "30d"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/variables": {
+      "get": {
+        "operationId": "list_variables",
+        "summary": "List environment variables",
+        "description": "An app's environment variables. Secret values are hidden unless `reveal` is true, which needs full access and is recorded in the audit log.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          },
+          {
+            "name": "reveal",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Include secret values",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "set_variables",
+        "summary": "Set environment variables",
+        "description": "Creates or updates an app's environment variables in one call. Keys are UPPER_CASE. List a key in `secret` to hide its value in the dashboard. Variables apply on the next deploy: call deploy_app to use them now.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "variables": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "pattern": "^[A-Z_][A-Z0-9_]*$"
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 32768
+                    }
+                  },
+                  "secret": {
+                    "description": "Keys whose values are secrets",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Z_][A-Z0-9_]*$"
+                    }
+                  }
+                },
+                "required": [
+                  "variables"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/variables/{key}": {
+      "delete": {
+        "operationId": "unset_variable",
+        "summary": "Remove an environment variable",
+        "description": "Removes one environment variable from an app. Variables apply on the next deploy: call deploy_app to use them now.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Z_][A-Z0-9_]*$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/domains": {
+      "get": {
+        "operationId": "list_domains",
+        "summary": "List an app's domains",
+        "description": "The app's own subdomain and its custom domains, each with whether DNS is verified and the certificate's state.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "add_domain",
+        "summary": "Add a custom domain",
+        "description": "Adds a custom domain to an app and returns the DNS records to create at the domain's DNS provider. Instant checks the records every minute and issues the HTTPS certificate once they resolve; check_domain checks now.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The app's slug or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hostname": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 253,
+                    "description": "For example www.example.com"
+                  }
+                },
+                "required": [
+                  "hostname"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains/{hostname}/verify": {
+      "post": {
+        "operationId": "check_domain",
+        "summary": "Check a custom domain",
+        "description": "Checks a custom domain's DNS records now and returns whether it is verified, the certificate's state, and the records still needed.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "hostname",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 253
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/databases": {
+      "get": {
+        "operationId": "list_databases",
+        "summary": "List databases",
+        "description": "PostgreSQL, MySQL and Redis databases in the organization with their status and size.",
+        "x-access": "read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "create_database",
+        "summary": "Create a database",
+        "description": "Creates a PostgreSQL, MySQL or Redis database on Instant's private network. It starts as `creating` and is usually `running` within a minute; check with get_database. Pass `connect` to put its connection string into apps' variables (DATABASE_URL, or REDIS_URL for Redis) and redeploy them when it is ready.",
+        "x-access": "write",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 40,
+                    "pattern": "^[a-z][a-z0-9_-]*$",
+                    "description": "Lowercase letters, digits, - and _"
+                  },
+                  "engine": {
+                    "type": "string",
+                    "enum": [
+                      "postgres",
+                      "postgresql",
+                      "mysql",
+                      "redis"
+                    ]
+                  },
+                  "version": {
+                    "description": "Defaults to the engine's current version (PostgreSQL 16, MySQL 8.4, Redis 7.4)",
+                    "type": "string"
+                  },
+                  "size": {
+                    "description": "Leave out for the smallest size",
+                    "type": "object",
+                    "properties": {
+                      "vcpu": {
+                        "type": "number",
+                        "minimum": 0.25
+                      },
+                      "memoryMb": {
+                        "type": "integer",
+                        "minimum": 256,
+                        "maximum": 9007199254740991
+                      },
+                      "storageMb": {
+                        "type": "integer",
+                        "minimum": 512,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "vcpu",
+                      "memoryMb",
+                      "storageMb"
+                    ]
+                  },
+                  "region": {
+                    "type": "string"
+                  },
+                  "connect": {
+                    "description": "Slugs or ids of apps to connect",
+                    "maxItems": 20,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "engine"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/databases/{database}": {
+      "get": {
+        "operationId": "get_database",
+        "summary": "Get a database",
+        "description": "One database's status, engine, size and hosts. Connection strings come from get_database_credentials.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "resize_database",
+        "summary": "Resize a database",
+        "description": "Changes a database's vCPUs, memory or disk. The database restarts with the new size, which takes it offline for a few seconds. Disk can only grow.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "vcpu": {
+                    "type": "number",
+                    "minimum": 0.25
+                  },
+                  "memoryMb": {
+                    "type": "integer",
+                    "minimum": 256,
+                    "maximum": 9007199254740991
+                  },
+                  "storageMb": {
+                    "type": "integer",
+                    "minimum": 512,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/databases/{database}/start": {
+      "post": {
+        "operationId": "start_database",
+        "summary": "Start a database",
+        "description": "Starts a stopped database.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/databases/{database}/stop": {
+      "post": {
+        "operationId": "stop_database",
+        "summary": "Stop a database",
+        "description": "Stops a database: apps using it lose their connection until it is started again. Its data is kept.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/databases/{database}/credentials": {
+      "get": {
+        "operationId": "get_database_credentials",
+        "summary": "Get a database's connection strings",
+        "description": "The private connection string apps on Instant use (DATABASE_URL), the public one for tools on your computer (DATABASE_PUBLIC_URL), and the user and password. Needs full access; recorded in the audit log. Prefer connect_database to give an app its URL.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/databases/{database}/connect": {
+      "post": {
+        "operationId": "connect_database",
+        "summary": "Connect a database to an app",
+        "description": "Writes the database's private connection string into an app's variables (DATABASE_URL by default, REDIS_URL for Redis) and redeploys the app unless `redeploy` is false.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "app": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The app's slug or id"
+                  },
+                  "variable": {
+                    "type": "string",
+                    "pattern": "^[A-Z_][A-Z0-9_]*$"
+                  },
+                  "redeploy": {
+                    "default": true,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "app"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/databases/{database}/query": {
+      "post": {
+        "operationId": "query_database",
+        "summary": "Run a read-only SQL query",
+        "description": "Runs one SELECT, SHOW, EXPLAIN or WITH \u2026 SELECT on a PostgreSQL or MySQL database and returns up to 200 rows. It runs in a read-only transaction, so it cannot change data or the schema: make changes through the app's migrations.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sql": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 20000
+                  }
+                },
+                "required": [
+                  "sql"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/databases/{database}/metrics": {
+      "get": {
+        "operationId": "get_database_metrics",
+        "summary": "Get a database's metrics",
+        "description": "CPU, memory and disk use of a database over a window, with its size limits.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          },
+          {
+            "name": "window",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": "1h",
+              "type": "string",
+              "enum": [
+                "1h",
+                "6h",
+                "24h",
+                "7d",
+                "30d"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/databases/{database}/backups": {
+      "get": {
+        "operationId": "list_backups",
+        "summary": "List a database's backups",
+        "description": "Backups of a database, newest first, with their size and state. Restoring one is done in the dashboard.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "create_backup",
+        "summary": "Back up a database now",
+        "description": "Starts a backup of a database. Take one before a risky migration.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "database",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The database's name or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string",
+                    "maxLength": 120
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/buckets": {
+      "get": {
+        "operationId": "list_buckets",
+        "summary": "List storage buckets",
+        "description": "S3-compatible object storage buckets in the organization, with their size and object count.",
+        "x-access": "read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "create_bucket",
+        "summary": "Create a storage bucket",
+        "description": "Creates an S3-compatible bucket. Private by default (objects need a key); `public` makes objects readable by anyone with the link. Names are global: lowercase letters, digits and dashes.",
+        "x-access": "write",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 63
+                  },
+                  "public": {
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  "region": {
+                    "type": "string"
+                  },
+                  "connect": {
+                    "description": "Slugs or ids of apps that get S3_* variables for this bucket",
+                    "maxItems": 10,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/buckets/{bucket}/connect": {
+      "post": {
+        "operationId": "connect_bucket",
+        "summary": "Connect a bucket to an app",
+        "description": "Gives an app its own access key to a bucket and writes S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY into its variables, then redeploys it unless `redeploy` is false.",
+        "x-access": "write",
+        "parameters": [
+          {
+            "name": "bucket",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The bucket's name or id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "app": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "permission": {
+                    "default": "readwrite",
+                    "type": "string",
+                    "enum": [
+                      "read",
+                      "readwrite"
+                    ]
+                  },
+                  "prefix": {
+                    "default": "S3_",
+                    "description": "Variable name prefix, e.g. S3_ or UPLOADS_",
+                    "type": "string",
+                    "pattern": "^[A-Z][A-Z0-9_]*_$"
+                  },
+                  "redeploy": {
+                    "default": true,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "app"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deployments/{deployment}/logs/stream": {
+      "get": {
+        "operationId": "stream_build_logs",
+        "summary": "Stream build and deploy logs",
+        "description": "Every line of the deployment's log as it is written, then an `event: done` with the final status.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "deployment",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server-sent events: `data:` lines carry one log line as JSON; `: ping` comments keep the connection open.",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{app}/logs/stream": {
+      "get": {
+        "operationId": "stream_runtime_logs",
+        "summary": "Stream runtime logs",
+        "description": "Recent output of the running app, then new lines as they come. Runs until the client disconnects.",
+        "x-access": "read",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server-sent events: `data:` lines carry one log line as JSON; `: ping` comments keep the connection open.",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "bad_request",
+                            "unauthorized",
+                            "payment_required",
+                            "forbidden",
+                            "plan_limit",
+                            "not_found",
+                            "conflict",
+                            "too_large",
+                            "rate_limited",
+                            "unavailable",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "dashboardUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
