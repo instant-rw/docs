@@ -77,6 +77,9 @@
     "background": "/images/og-image.png"
   },
   "icons": {
-    "library": "tabler"
+    "library": "fontawesome"
+  },
+  "background": {
+    "decoration": "grid"
   }
 }
