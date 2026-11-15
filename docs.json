@@ -81,5 +81,11 @@
   },
   "background": {
     "decoration": "windows"
+  },
+  "fonts": {
+    "family": "Geist"
+  },
+  "styling": {
+    "codeblocks": "dark"
   }
 }
