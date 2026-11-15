@@ -1,0 +1,142 @@
+---
+title: "Connect a client"
+description: "Add Instant to Claude, ChatGPT, Claude Code, Cursor, Codex, VS Code, Antigravity, Zed or any other MCP client."
+---
+
+Every client needs the same server URL: `https://mcp.instant.rw/mcp`. The first time it is used, the client opens your browser so you can sign in, choose an organization and choose Full access or Read only. See [AI agents](/agents/overview).
+
+If you have the [CLI](/cli/overview), one command does the setup for you:
+
+```sh
+instant mcp install            # choose a client
+instant mcp install claude-code
+```
+
+The client names are `claude-code`, `codex`, `cursor`, `vscode`, `antigravity`, `zed` and `claude`. Config files the CLI edits are backed up as `.bak` first, and `--print` only prints what it would do.
+
+## Set up your client
+
+<Tabs>
+  <Tab title="Claude">
+    On the web or in the desktop app, open this link, or select **Add to Claude** under AI agents in the dashboard:
+
+    ```text
+    https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Instant&connectorUrl=https%3A%2F%2Fmcp.instant.rw%2Fmcp
+    ```
+
+    <Steps>
+      <Step title="Add Instant">
+        Claude opens Add custom connector with the name and URL filled in. Check them and select **Add**.
+      </Step>
+      <Step title="Sign in">
+        Select **Connect**. Instant opens: sign in, choose the organization and select **Allow**.
+      </Step>
+    </Steps>
+
+    To add it by hand, go to Customize, then Connectors, then Add custom connector, and paste `https://mcp.instant.rw/mcp`. Free plans allow one custom connector.
+  </Tab>
+  <Tab title="ChatGPT">
+    <Steps>
+      <Step title="Add Instant">
+        Open [Plugins](https://chatgpt.com/plugins) in ChatGPT, select **+**, then **Add custom MCP server**. Name it Instant and paste `https://mcp.instant.rw/mcp`.
+      </Step>
+      <Step title="Create it">
+        Keep OAuth sign-in, confirm the warning and select **Create as a plugin**.
+      </Step>
+      <Step title="Sign in">
+        Install the plugin. When ChatGPT asks, sign in to Instant, choose the organization and select **Allow**. Then type `@Instant` in a chat.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Claude Code">
+    ```sh
+    claude mcp add --transport http instant https://mcp.instant.rw/mcp
+    ```
+
+    In Claude Code, run `/mcp`, pick instant and sign in.
+  </Tab>
+  <Tab title="Cursor">
+    The dashboard has an install button under AI agents. You can also open this link, where the config is the base64 of `{"url":"https://mcp.instant.rw/mcp"}`:
+
+    ```text
+    cursor://anysphere.cursor-deeplink/mcp/install?name=instant&config=<base64 config>
+    ```
+
+    Or add this to `~/.cursor/mcp.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "instant": { "url": "https://mcp.instant.rw/mcp" }
+      }
+    }
+    ```
+
+    Then open Cursor Settings, then MCP, and choose "Needs login" next to instant.
+  </Tab>
+  <Tab title="Codex">
+    ```sh
+    codex mcp add instant --url https://mcp.instant.rw/mcp
+    codex mcp login instant
+    ```
+
+    The Codex IDE extension uses the same configuration.
+  </Tab>
+  <Tab title="VS Code">
+    The dashboard has an **Add to VS Code** link under AI agents. Or, with GitHub Copilot, run:
+
+    ```sh
+    code --add-mcp '{"name":"instant","type":"http","url":"https://mcp.instant.rw/mcp"}'
+    ```
+
+    Or add this to `.vscode/mcp.json`:
+
+    ```json
+    {
+      "servers": {
+        "instant": { "type": "http", "url": "https://mcp.instant.rw/mcp" }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Antigravity">
+    Add this to `~/.gemini/config/mcp_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "instant": { "serverUrl": "https://mcp.instant.rw/mcp" }
+      }
+    }
+    ```
+
+    Then run `/mcp` in the Antigravity CLI (`agy`) to sign in.
+  </Tab>
+  <Tab title="Zed">
+    Open Settings, then AI, then MCP Servers, then Add Server, and choose a remote server. Or add this to your settings:
+
+    ```json
+    {
+      "context_servers": {
+        "instant": { "url": "https://mcp.instant.rw/mcp" }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Other clients">
+    - A client that supports Streamable HTTP and OAuth needs only the URL `https://mcp.instant.rw/mcp`.
+    - A client without OAuth can send an [API token](/api/tokens) in a header: `Authorization: Bearer inst_…`. A token works in one organization with the access you gave it.
+    - A client that can only start local servers can run `instant mcp`. The CLI forwards to the remote server using its own sign-in, so run `instant login` first.
+  </Tab>
+</Tabs>
+
+## Try it
+
+After you sign in, ask the agent things like:
+
+- "List my Instant apps and tell me which ones failed their last deployment."
+- "Why did the latest deployment of my-app fail? Read the build log."
+- "Create a PostgreSQL database called my-app-db, connect it to my-app and redeploy."
+- "Show my-app's memory use over the last day and tell me if it needs a bigger size."
+
+The first two work with Read only. The others change things and need Full access.

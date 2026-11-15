@@ -1,0 +1,53 @@
+---
+title: "AI agents"
+description: "Let an AI client deploy and manage your Instant Cloud apps, with an organization and an access level you choose."
+---
+
+Instant Cloud has an MCP server. An AI client such as Claude Code, Cursor or Codex connects to it and can then work with your apps, databases, buckets and domains from a chat or an editor.
+
+The server is at `https://mcp.instant.rw/mcp` and uses Streamable HTTP.
+
+## What an agent can do
+
+With Full access an agent can:
+
+- deploy, roll back, scale, pause and resume apps
+- change app settings and environment variables, including removing a variable
+- create databases, buckets and domains, and connect databases and buckets to apps
+- take database backups
+- read logs, metrics and usage
+
+With Read only it can see apps, deployments, databases, buckets, logs, metrics and usage. Secret variable values stay hidden. SQL an agent runs through `query_database` always runs in a read-only transaction.
+
+See the [tool reference](/agents/tools) for every tool.
+
+## What an agent cannot do
+
+No connection can delete apps, databases, buckets or domains, restore backups, change the plan, pay, or manage members or API tokens. These stay in the dashboard at [app.instant.rw](https://app.instant.rw).
+
+## How sign-in works
+
+<Steps>
+  <Step title="Add Instant to your client">
+    Follow the [setup for your client](/agents/connect). You only need the server URL.
+  </Step>
+  <Step title="Sign in in the browser">
+    The client opens a page on Instant. Sign in if you are not already.
+  </Step>
+  <Step title="Choose an organization and access">
+    Pick the one organization the connection works in, and either Full access or Read only. To use another organization, connect again.
+  </Step>
+</Steps>
+
+## Disconnect a client
+
+Open the dashboard, go to AI agents, then Connect, then Connected. Each connection is listed there. Disconnect it and it stops working immediately.
+
+## Audit log
+
+Changes made through a connection appear in the organization's audit log with the client that made them, so you can tell an agent's change from a person's.
+
+## Other ways to give an agent access
+
+- An [API token](/api/tokens) works for clients that cannot sign in with OAuth, and for CI.
+- The [CLI](/cli/overview) works for agents that run shell commands, and every command can print JSON.

@@ -1,0 +1,93 @@
+---
+title: "Tool reference"
+description: "Every tool an AI agent can call on Instant, grouped by area, with what it does and whether it needs full access."
+---
+
+An agent connected to Instant sees these tools. Tools marked read work with both access levels. Tools marked write need Full access. Each tool is also an operation in the [API](/api/overview), where the tool name is the operation ID.
+
+The agent can only act in the organization you chose when you connected. Deleting apps, databases, buckets and domains, restoring backups, changing the plan, paying, and managing members or tokens are not available as tools.
+
+
+## Account and organization
+
+| Tool | What it does | Access |
+| --- | --- | --- |
+| `whoami` | The signed-in person, the organization this connection acts in, and whether it can make changes (access `write`) or only read (`read`). | read |
+| `list_organizations` | Organizations this connection can act in, with your role in each. | read |
+| `list_regions` | Regions apps, databases and buckets can run in. | read |
+| `get_usage` | The organization's plan, credit balance and billing state. | read |
+
+## Apps
+
+| Tool | What it does | Access |
+| --- | --- | --- |
+| `list_apps` | Apps in the organization with their URL, status, source (a GitHub repository or uploaded folders) and latest deployment. | read |
+| `get_app` | One app: URL, domains, size, build settings, source and its latest deployment. | read |
+| `create_app` | Creates an app. | write |
+| `update_app` | Renames an app or changes how it is built: branch, root directory, build and start commands, and whether pushes deploy automatically. | write |
+| `scale_app` | Changes the vCPUs and memory of each instance and the number of instances. | write |
+| `pause_app` | Stops the app so it no longer serves requests or costs anything. | write |
+| `resume_app` | Starts a paused app again with its last deployment. | write |
+| `list_repositories` | GitHub repositories Instant can build, from the accounts where you installed the Instant GitHub app. | read |
+
+## Deployments and logs
+
+| Tool | What it does | Access |
+| --- | --- | --- |
+| `deploy_app` | Starts a deployment and returns at once; follow it with get_deployment or get_build_logs. | write |
+| `list_deployments` | An app's deployments, newest first, with status, commit or upload, and why a failed one failed. | read |
+| `get_deployment` | One deployment's status and timing. | read |
+| `cancel_deployment` | Stops a deployment that is still queued, building or deploying. | write |
+| `rollback_app` | Deploys an earlier deployment's code again (its commit, or its uploaded folder). | write |
+| `get_build_logs` | The deployment's log: build output, then the app's output while it started. | read |
+| `get_build_fix` | For a failed deployment, what Instant recognised in the log (a missing variable, a wrong start command, a lockfile problem…) and how to fix it. | read |
+| `get_runtime_logs` | What the running app printed, newest last, across all its instances. | read |
+| `get_app_metrics` | CPU (cores), memory (MB), network (bytes per second) and restarts for an app over a window, with its limits. | read |
+
+## Environment variables
+
+| Tool | What it does | Access |
+| --- | --- | --- |
+| `list_variables` | An app's environment variables. | read |
+| `set_variables` | Creates or updates an app's environment variables in one call. | write |
+| `unset_variable` | Removes one environment variable from an app. | write |
+
+## Domains
+
+| Tool | What it does | Access |
+| --- | --- | --- |
+| `list_domains` | The app's own subdomain and its custom domains, each with whether DNS is verified and the certificate's state. | read |
+| `add_domain` | Adds a custom domain to an app and returns the DNS records to create at the domain's DNS provider. | write |
+| `check_domain` | Checks a custom domain's DNS records now and returns whether it is verified, the certificate's state, and the records still needed. | write |
+
+## Databases
+
+| Tool | What it does | Access |
+| --- | --- | --- |
+| `list_databases` | PostgreSQL, MySQL and Redis databases in the organization with their status and size. | read |
+| `get_database` | One database's status, engine, size and hosts. | read |
+| `create_database` | Creates a PostgreSQL, MySQL or Redis database on Instant's private network. | write |
+| `resize_database` | Changes a database's vCPUs, memory or disk. | write |
+| `start_database` | Starts a stopped database. | write |
+| `stop_database` | Stops a database: apps using it lose their connection until it is started again. | write |
+| `connect_database` | Writes the database's private connection string into an app's variables (DATABASE_URL by default, REDIS_URL for Redis) and redeploys the app unless `redeploy` is false. | write |
+| `query_database` | Runs one SELECT, SHOW, EXPLAIN or WITH … SELECT on a PostgreSQL or MySQL database and returns up to 200 rows. | read |
+| `get_database_metrics` | CPU, memory and disk use of a database over a window, with its size limits. | read |
+| `list_backups` | Backups of a database, newest first, with their size and state. | read |
+| `create_backup` | Starts a backup of a database. | write |
+| `get_database_credentials` | The private connection string apps on Instant use (DATABASE_URL), the public one for tools on your computer (DATABASE_PUBLIC_URL), and the user and password. | write |
+
+## Storage buckets
+
+| Tool | What it does | Access |
+| --- | --- | --- |
+| `list_buckets` | S3-compatible object storage buckets in the organization, with their size and object count. | read |
+| `create_bucket` | Creates an S3-compatible bucket. | write |
+| `connect_bucket` | Gives an app its own access key to a bucket and writes S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY into its variables, then redeploys it unless `redeploy` is false. | write |
+
+## Notes
+
+- `get_database_credentials` returns connection strings and the password, so it needs Full access and is recorded in the audit log. To give an app a database, an agent uses `connect_database`, which does not show the string.
+- `list_variables` hides secret values. Showing them needs Full access and is recorded in the audit log.
+- `query_database` runs one read-only statement in a read-only transaction and returns up to 200 rows.
+- Local folder uploads and live log streams are not tools. Use [`instant deploy`](/cli/deploy-a-folder) for folders, and `get_build_logs` or `get_runtime_logs` for logs.
