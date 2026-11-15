@@ -87,5 +87,8 @@
   },
   "styling": {
     "codeblocks": "dark"
+  },
+  "appearance": {
+    "default": "dark"
   }
 }
