@@ -1,0 +1,105 @@
+---
+title: "CLI"
+description: "Install the Instant CLI, sign in, deploy a folder, and use it from scripts, CI and AI agents."
+---
+
+The `instant` command deploys folders, reads logs, and manages variables, databases, buckets and domains. The npm package is `instant-cloud`.
+
+## Install
+
+<Tabs>
+  <Tab title="macOS and Linux">
+    ```sh
+    curl -fsSL https://instant.rw/install.sh | sh
+    ```
+  </Tab>
+  <Tab title="Windows">
+    ```powershell
+    irm https://instant.rw/install.ps1 | iex
+    ```
+  </Tab>
+  <Tab title="npm">
+    Needs Node 20 or newer.
+
+    ```sh
+    npm i -g instant-cloud
+    ```
+  </Tab>
+</Tabs>
+
+Update later with `instant upgrade`.
+
+## Sign in
+
+```sh
+instant login
+```
+
+The CLI shows a code and opens [app.instant.rw/device](https://app.instant.rw/device). Check that the code matches and approve it. Add `--no-browser` to print the link instead of opening it.
+
+A sign-in works in all your organizations. Run `instant orgs` to list them and `instant switch <org>` to choose the default. For one command, pass `--org <org>` or set `INSTANT_ORG`.
+
+Sign-ins are stored in `~/.config/instant/auth.json` (`%APPDATA%\instant` on Windows). `instant whoami` shows who you are, the organization and the access level.
+
+## Common tasks
+
+```sh
+instant deploy                       # upload this folder and follow the build
+instant logs -f                      # follow runtime logs
+instant env set API_KEY=abc --secret # change a variable
+instant db create main --engine postgres --connect my-app
+instant domains add example.com      # prints the DNS records to create
+instant rollback <deployment>        # redeploy an earlier deployment
+```
+
+See [Deploy a folder](/cli/deploy-a-folder) for how deploying works. Deleting apps, databases, buckets and domains is only possible in the dashboard.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `instant login`, `logout`, `whoami` | Sign in, sign out, show the current sign-in |
+| `instant orgs`, `switch [org]` | List organizations, choose the default |
+| `instant link [app]`, `unlink` | Link this folder to an app |
+| `instant apps`, `apps create` | List apps, create one |
+| `instant status [app]` | Show an app and its latest deployment |
+| `instant open [app] [--live]` | Open the dashboard page or the live site |
+| `instant deploy [path]` | Upload a folder and deploy it |
+| `instant deployments [app]` | List deployments |
+| `instant rollback <deployment>` | Redeploy an earlier deployment |
+| `instant cancel <deployment>` | Cancel a running deployment |
+| `instant logs [app]` | Runtime logs, or a build log with `--build <deployment>` |
+| `instant env [app]` | List variables; `set`, `unset`, `pull` and `push` change them |
+| `instant db` | List databases; `create`, `url`, `connect`, `query` and `shell` |
+| `instant domains [app]` | List domains; `add` and `check` |
+| `instant buckets` | List buckets; `create` and `connect` |
+| `instant metrics [app]` | CPU, memory and network over a window |
+| `instant mcp`, `mcp install` | Local MCP proxy, set up an AI client |
+| `instant upgrade` | Update the CLI |
+
+Run `instant <command> --help` for flags and examples. These flags work on every command:
+
+| Flag | Meaning |
+| --- | --- |
+| `-a, --app <app>` | The app to act on |
+| `--org <org>` | The organization, by ID or slug |
+| `--json` | Print JSON |
+| `-y, --yes` | Never ask questions |
+| `--api-url <url>` | Use another API address |
+
+## Scripts, CI and agents
+
+- Every command accepts `--json`. For `instant deploy --json`, the output is `{ deployment, url }` and the build log goes to stderr.
+- When there is no terminal, when `CI` is set, or with `--yes` or `--json`, the CLI never asks a question. Pass what it would have asked for as flags, for example `--app my-app`.
+- Exit codes are `0` for done, `1` for failed and `2` for wrong usage.
+- In CI, use an [API token](/api/tokens) instead of `instant login`.
+
+| Variable | Meaning |
+| --- | --- |
+| `INSTANT_TOKEN` | An API token, used instead of a stored sign-in |
+| `INSTANT_API_URL` | API address, `https://api.instant.rw` by default |
+| `INSTANT_ORG` | Organization for browser sign-ins |
+| `INSTANT_APP` | App to use when none is given or linked |
+| `INSTANT_DEBUG` | Set to `1` to print request lines to stderr, with tokens hidden |
+
+An agent that can run shell commands can use the CLI directly, for example `instant deploy --json --yes` and `instant logs --build <deployment> --json`. To give an agent MCP tools instead, see [Connect a client](/agents/connect).
