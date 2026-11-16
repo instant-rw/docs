@@ -1,0 +1,91 @@
+---
+title: "Databases"
+description: "Create a managed PostgreSQL, MySQL or Redis database on Instant Cloud, connect it to your app, reach it from your computer, browse data and set up backups."
+keywords: ["database", "postgresql", "postgres", "mysql", "redis", "backups", "DATABASE_URL", "connection string"]
+---
+
+Instant Cloud runs PostgreSQL, MySQL and Redis for you on the same private network as your apps. Create one, connect it to an app, and its connection string is in the app's variables. There's no server to set up.
+
+## Engines and versions
+
+| Engine | Versions | Default |
+| --- | --- | --- |
+| PostgreSQL | 17, 16, 15, 14 | 16 |
+| MySQL | 8.4, 8.0 | 8.4 |
+| Redis | 7.4, 7.2 | 7.4 |
+
+## Create a database
+
+<Steps>
+  <Step title="Start a new database">
+    Open **Databases** and select **New database**. Choose the engine, then a name (lowercase letters, numbers, dashes or underscores) and a version.
+  </Step>
+  <Step title="Pick a size">
+    Choose **Small** (0.25 vCPU, 512 MB memory, 1 GB disk), **Medium** (0.5 vCPU, 1 GB, 10 GB) or **Large** (1 vCPU, 2 GB, 20 GB), or set a custom size. Your plan sets the largest size available.
+  </Step>
+  <Step title="Connect apps (optional)">
+    Select the apps that should use it. They get the connection string and redeploy once the database is ready.
+  </Step>
+  <Step title="Create it">
+    Select **Create database**. It's ready in about a minute.
+  </Step>
+</Steps>
+
+From the terminal:
+
+```sh
+instant db create main --engine postgres --connect my-app
+```
+
+## Connect a database to an app
+
+Connecting writes the database's private connection string into the app's variables, as a secret:
+
+- `DATABASE_URL` for PostgreSQL and MySQL
+- `REDIS_URL` for Redis
+
+On the database's **Access** page, select **Connect app**, choose the app and, if you like, a different variable name. Keep **Redeploy now** on so the app picks it up straight away. With the CLI, run `instant db connect main --app my-app`.
+
+Traffic between your app and the database stays on Instant's private network.
+
+## Connect from your computer
+
+Every database also has a public address for tools like TablePlus, pgAdmin, `psql`, the `mysql` client or `redis-cli`. Find it on the **Access** page under **Public**, or print it with the CLI:
+
+```sh
+instant db url main --public
+instant db shell main          # opens psql, mysql or redis-cli
+```
+
+Public PostgreSQL connections require TLS. Every time someone reveals a password or connection string, it's recorded in the database's history.
+
+## Browse and query data
+
+The **Data** page lets you work with your data in the browser.
+
+- **Browse** lists tables and their rows. You can add, edit and delete rows in tables that have a primary key.
+- **Query** runs one SQL statement at a time. Statements that change data ask for confirmation first, and queries stop after 15 seconds.
+- For Redis, the page lists keys and lets you view, set and delete them.
+
+`instant db query main "SELECT count(*) FROM users"` runs a read-only query from the terminal.
+
+## Backups
+
+Backups are saved to one of your own [storage buckets](/data/storage), so you can download them like any other file.
+
+- **Daily backups** run at an hour you choose and are kept for 3, 7, 14, 30 or 90 days. Set them up on the database's **Backups** page with **Set up backups**. Scheduled backups need the Hobby or Pro plan.
+- **Back up now** takes a backup at any time while the database is running.
+- **Restore** a completed backup into a new database, or replace the current data. Restoring is only possible in the dashboard.
+
+Backups count toward the bucket's storage.
+
+## Stop, start and resize
+
+- **Stop** a database from **Settings** to keep its data while it isn't needed. Apps lose their connection, and only its disk is charged. **Start** brings it back in about 20 seconds.
+- **Resize** vCPU and memory on the **Scaling** page. A running database restarts, which takes about 30 seconds.
+
+The **Metrics** page charts CPU, memory and network over the last hour, day, week or month.
+
+## Pricing
+
+A running database is charged for its vCPU, memory and disk, and a stopped one for its disk only. See [usage rates](/account/billing#usage-rates).

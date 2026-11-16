@@ -12,37 +12,187 @@
     "dark": "/images/android-chrome-512x512.png"
   },
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
+        "tab": "Guide",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "index",
+              "quickstart",
+              "how-it-works"
+            ]
+          },
+          {
+            "group": "Deploy",
+            "pages": [
+              "deploy/github",
+              "deploy/without-git",
+              "deploy/builds",
+              "deploy/environment-variables",
+              "deploy/domains"
+            ]
+          },
+          {
+            "group": "Run your app",
+            "pages": [
+              "apps/deployments",
+              "apps/scaling",
+              "apps/logs-and-metrics"
+            ]
+          },
+          {
+            "group": "Databases and storage",
+            "pages": [
+              "data/databases",
+              "data/storage"
+            ]
+          },
+          {
+            "group": "Account",
+            "pages": [
+              "account/organizations",
+              "account/billing"
+            ]
+          }
         ]
       },
       {
-        "group": "AI agents",
-        "pages": [
-          "agents/overview",
-          "agents/connect",
-          "agents/tools"
-        ]
-      },
-      {
-        "group": "CLI",
-        "pages": [
-          "cli/overview",
-          "cli/deploy-a-folder"
-        ]
-      },
-      {
-        "group": "API",
-        "pages": [
-          "api/overview",
-          "api/tokens",
+        "tab": "MCP server",
+        "icon": "robot",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "agents/overview",
+              "agents/connect"
+            ]
+          },
           {
             "group": "Reference",
-            "openapi": "api-reference/openapi.json"
+            "pages": [
+              "agents/tools"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CLI",
+        "icon": "terminal",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "cli/overview",
+              "cli/scripts-and-ci"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "cli/commands"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "icon": "code",
+        "openapi": "api-reference/openapi.json",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "api/overview",
+              "api/tokens"
+            ]
+          },
+          {
+            "group": "Account",
+            "pages": [
+              "GET /me",
+              "GET /organizations",
+              "GET /regions",
+              "GET /usage"
+            ]
+          },
+          {
+            "group": "Apps",
+            "pages": [
+              "GET /apps",
+              "POST /apps",
+              "GET /apps/{app}",
+              "PATCH /apps/{app}",
+              "POST /apps/{app}/scale",
+              "POST /apps/{app}/pause",
+              "POST /apps/{app}/resume",
+              "GET /github/repositories"
+            ]
+          },
+          {
+            "group": "Deployments",
+            "pages": [
+              "POST /apps/{app}/deployments",
+              "GET /apps/{app}/deployments",
+              "POST /apps/{app}/uploads",
+              "GET /deployments/{deployment}",
+              "POST /deployments/{deployment}/cancel",
+              "POST /apps/{app}/rollback",
+              "GET /deployments/{deployment}/fix"
+            ]
+          },
+          {
+            "group": "Logs and metrics",
+            "pages": [
+              "GET /deployments/{deployment}/logs",
+              "GET /deployments/{deployment}/logs/stream",
+              "GET /apps/{app}/logs",
+              "GET /apps/{app}/logs/stream",
+              "GET /apps/{app}/metrics"
+            ]
+          },
+          {
+            "group": "Environment variables",
+            "pages": [
+              "GET /apps/{app}/variables",
+              "PUT /apps/{app}/variables",
+              "DELETE /apps/{app}/variables/{key}"
+            ]
+          },
+          {
+            "group": "Domains",
+            "pages": [
+              "GET /apps/{app}/domains",
+              "POST /apps/{app}/domains",
+              "POST /domains/{hostname}/verify"
+            ]
+          },
+          {
+            "group": "Databases",
+            "pages": [
+              "GET /databases",
+              "POST /databases",
+              "GET /databases/{database}",
+              "PATCH /databases/{database}",
+              "POST /databases/{database}/start",
+              "POST /databases/{database}/stop",
+              "GET /databases/{database}/credentials",
+              "POST /databases/{database}/connect",
+              "POST /databases/{database}/query",
+              "GET /databases/{database}/metrics",
+              "GET /databases/{database}/backups",
+              "POST /databases/{database}/backups"
+            ]
+          },
+          {
+            "group": "Storage",
+            "pages": [
+              "GET /buckets",
+              "POST /buckets",
+              "POST /buckets/{bucket}/connect"
+            ]
           }
         ]
       }
@@ -50,14 +200,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Pricing",
+          "href": "https://instant.rw/pricing",
+          "icon": "tag"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Status",
+          "href": "https://instant.rw/status",
+          "icon": "signal"
         }
       ]
     }
@@ -116,5 +266,12 @@
   },
   "appearance": {
     "default": "dark"
-  }
+  },
+  "redirects": [
+    {
+      "source": "/cli/deploy-a-folder",
+      "destination": "/deploy/without-git"
+    }
+  ],
+  "description": "Deploy web apps, PostgreSQL, MySQL and Redis databases and S3-compatible storage on Instant Cloud, from GitHub, your computer or an AI agent."
 }

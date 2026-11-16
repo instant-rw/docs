@@ -1,0 +1,169 @@
+---
+title: "Commands"
+description: "Every instant command with its arguments, flags and examples: deploy, logs, env, db, domains, buckets, metrics, mcp and account commands."
+keywords: ["instant cli", "commands", "instant deploy", "instant env", "instant db", "instant logs", "flags"]
+---
+
+This page lists every `instant` command. Run `instant <command> --help` for the same information in your terminal.
+
+Commands that act on an app use the app linked to the current directory (see `instant link`). Pass `--app <app>` or set `INSTANT_APP` to choose another one.
+
+## Global flags
+
+These flags work with every command.
+
+| Flag | Description |
+| --- | --- |
+| `-a, --app <app>` | App name or ID. Defaults to the linked app. |
+| `--org <org>` | Organization slug or ID, for browser sign-ins. |
+| `--json` | Print machine-readable JSON on stdout. |
+| `-y, --yes` | Never ask questions, and assume yes. |
+| `--api-url <url>` | API address. Same as `INSTANT_API_URL`. |
+| `-v, --version` | Print the CLI version. |
+
+## Account
+
+| Command | Description |
+| --- | --- |
+| `instant login` | Sign in with your browser. `--no-browser` prints the link instead; `--token <token>` stores an [API token](/api/tokens). |
+| `instant logout` | Sign out and delete the stored credentials. |
+| `instant whoami` | Show the account, organization and access level in use. |
+| `instant orgs` | List your organizations. |
+| `instant switch [org]` | Choose the default organization for browser sign-ins. |
+| `instant upgrade` | Update the CLI to the latest version. |
+
+## Apps
+
+| Command | Description |
+| --- | --- |
+| `instant apps` | List your apps. |
+| `instant apps create [name]` | Create an app. Without `--repo`, it's an upload app you deploy with `instant deploy`. |
+| `instant status [app]` | Show an app and its latest deployment. |
+| `instant open [app]` | Open the app's dashboard page. `--live` opens the live site instead. |
+| `instant link [app]` | Link the current directory to an app. Omit the name to pick from a list. |
+| `instant unlink` | Remove the current directory's app link. |
+
+`instant apps create` flags:
+
+| Flag | Description |
+| --- | --- |
+| `--repo <owner/repo>` | GitHub repository to build on every push. |
+| `--branch <branch>` | Branch to deploy. Defaults to the repository's default branch. |
+| `--root-dir <dir>` | Directory of the app inside the repository, for monorepos. |
+| `--region <code>` | Region to run the app in. |
+| `--upload` | Create an app you deploy from your computer. This is the default without `--repo`. |
+
+```sh
+instant apps create shop --repo acme/shop --branch main
+instant apps create docs-site --upload
+```
+
+## Deployments
+
+| Command | Description |
+| --- | --- |
+| `instant deploy [path]` | Upload a directory (default `.`) and deploy it, then follow the build. |
+| `instant deployments [app]` | List an app's deployments. `-n, --limit <count>` sets how many (default 20). |
+| `instant rollback <deployment>` | Deploy an earlier deployment again. |
+| `instant cancel <deployment>` | Cancel a deployment that is still running. |
+
+`instant deploy` flags:
+
+| Flag | Description |
+| --- | --- |
+| `-m, --message <text>` | Note shown with the deployment. |
+| `--detach` | Start the deployment and return without following the build. |
+| `--git` | Deploy the app's source again without uploading: the latest commit for a GitHub app, or the last upload. |
+
+```sh
+instant deploy
+instant deploy ./site --app my-site
+instant deploy -m "Fix header" --detach
+```
+
+## Logs and metrics
+
+| Command | Description |
+| --- | --- |
+| `instant logs [app]` | Show the app's runtime logs. |
+| `instant metrics [app]` | Show CPU, memory and network use. `--window` takes `1h` (default), `6h`, `24h`, `7d` or `30d`. |
+
+`instant logs` flags:
+
+| Flag | Description |
+| --- | --- |
+| `-f, --follow` | Keep streaming new lines until you press Ctrl-C. |
+| `-n, --lines <count>` | How many lines to show. Defaults to 100. |
+| `--build <deployment>` | Show a deployment's build log instead. |
+
+## Environment variables
+
+| Command | Description |
+| --- | --- |
+| `instant env [app]` | List the app's variables. `--reveal` shows secret values and needs full access. |
+| `instant env set <KEY=VALUE...>` | Set one or more variables. `--secret` hides their values in the dashboard and CLI. |
+| `instant env unset <key>` | Remove a variable. |
+| `instant env pull [file]` | Write the app's variables to a dotenv file (default `.env`). |
+| `instant env push [file]` | Set every variable from a dotenv file (default `.env`). `--secret` marks them all as secrets. |
+
+Variable changes apply on the next deployment. Run `instant deploy --git` to redeploy straight away.
+
+```sh
+instant env set NODE_ENV=production
+instant env set STRIPE_KEY=sk_live_x --secret --app my-site
+instant env push .env.production
+```
+
+## Databases
+
+| Command | Description |
+| --- | --- |
+| `instant db` | List your databases. |
+| `instant db create <name>` | Create a database. `--engine` is required: `postgres`, `mysql` or `redis`. |
+| `instant db url <name>` | Print the private connection string. `--public` prints the address you can reach from your computer. |
+| `instant db connect <name>` | Write the connection string into an app's variables and redeploy it. |
+| `instant db query <name> <sql>` | Run a read-only SQL query on PostgreSQL or MySQL. |
+| `instant db shell <name>` | Open `psql`, `mysql` or `redis-cli` connected to the database. |
+
+`instant db create` also takes `--db-version <version>`, `--region <code>` and `--connect <app>`. `instant db connect` takes `--variable <name>` (default `DATABASE_URL`, or `REDIS_URL` for Redis) and `--no-redeploy`.
+
+```sh
+instant db create app-db --engine postgres --connect my-site
+psql "$(instant db url app-db --public)"
+```
+
+## Domains
+
+| Command | Description |
+| --- | --- |
+| `instant domains [app]` | List the app's domains with their DNS and certificate status. |
+| `instant domains add <hostname>` | Add a custom domain and print the DNS records to create. |
+| `instant domains check <hostname>` | Check the domain's DNS records now. |
+
+```sh
+instant domains add www.example.com --app my-site
+```
+
+## Storage
+
+| Command | Description |
+| --- | --- |
+| `instant buckets` | List your storage buckets. |
+| `instant buckets create <name>` | Create an S3-compatible bucket. Names use lowercase letters, digits and dashes, and are unique across Instant. `--public` lets anyone with the link read objects; `--connect <app>` gives an app access. |
+| `instant buckets connect <bucket>` | Give an app `S3_*` variables for the bucket, then redeploy it. |
+
+`instant buckets connect` takes `--permission` (`read` or `readwrite`, the default), `--prefix` (default `S3_`) and `--no-redeploy`.
+
+```sh
+instant buckets create my-uploads --connect my-site
+instant buckets connect my-uploads --app my-site --permission read
+```
+
+## AI clients
+
+| Command | Description |
+| --- | --- |
+| `instant mcp install [client]` | Add Instant's MCP server to an AI client: `claude-code`, `codex`, `cursor`, `vscode`, `antigravity`, `zed` or `claude`. `--print` shows the change without making it. |
+| `instant mcp` | Run a local MCP server over stdio, for clients that only start local servers. It uses your CLI sign-in. |
+
+See [Connect a client](/agents/connect) for each client's setup.

@@ -1,0 +1,84 @@
+---
+title: "Scripts and CI"
+description: "Run the Instant CLI without a person at the keyboard: API tokens, JSON output, exit codes, environment variables and a GitHub Actions deploy workflow."
+keywords: ["instant cli", "ci", "github actions", "json", "INSTANT_TOKEN", "automation", "scripts"]
+---
+
+The Instant CLI works the same with or without a person at the keyboard. In CI, a script or an AI agent's shell, sign in with an API token, ask for JSON, and check the exit code.
+
+## Sign in with a token
+
+Create an [API token](/api/tokens) in the dashboard and set it as `INSTANT_TOKEN`. No `instant login` is needed, and the token decides the organization and access level.
+
+```sh
+INSTANT_TOKEN=inst_… instant deploy --app my-app --yes
+```
+
+On your own computer, `instant login --token inst_…` stores a token instead of a browser sign-in.
+
+## Never prompt
+
+The CLI never asks a question when there is no terminal, when `CI` is set, or when you pass `--yes` or `--json`. Pass what it would have asked for as flags, for example `--app my-app`.
+
+## Read JSON output
+
+Every command accepts `--json` and prints JSON on stdout. `instant deploy --json` prints `{ deployment, url }` and sends the build log to stderr, so you can capture the result and still see the build.
+
+```sh
+url=$(instant deploy --app my-app --json | jq -r .url)
+```
+
+## Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | The command succeeded. For `instant deploy` without `--detach`, the deployment is live. |
+| `1` | The command or the deployment failed. |
+| `2` | Wrong usage, such as a missing argument or an unknown flag. |
+
+## Environment variables
+
+| Variable | Description |
+| --- | --- |
+| `INSTANT_TOKEN` | API token, used instead of a stored sign-in. |
+| `INSTANT_APP` | App to use when none is given or linked. |
+| `INSTANT_ORG` | Organization for browser sign-ins. |
+| `INSTANT_API_URL` | API address. Defaults to `https://api.instant.rw`. |
+| `INSTANT_DEBUG` | Set to `1` to print each request to stderr, with tokens hidden. |
+
+## Deploy from GitHub Actions
+
+Add a token with **Full access** as a repository secret named `INSTANT_TOKEN`, then add this workflow:
+
+```yaml .github/workflows/deploy.yml
+name: Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm i -g instant-cloud
+      - run: instant deploy --app my-app --yes
+        env:
+          INSTANT_TOKEN: ${{ secrets.INSTANT_TOKEN }}
+```
+
+If the app is connected to the same GitHub repository, it already deploys on every push, so you don't need this workflow. Use it for upload apps, or when the deploy must wait for your own tests.
+
+## AI agents
+
+Agents that run shell commands, such as Claude Code, Codex and Cursor, can use the CLI directly:
+
+```sh
+instant deploy --json --yes
+instant logs --build <deployment> --json
+```
+
+To give an agent tools instead of shell access, connect it to the [MCP server](/agents/overview).

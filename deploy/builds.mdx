@@ -1,0 +1,75 @@
+---
+title: "Builds"
+description: "How Instant Cloud detects your framework and builds your app, which port it must listen on, build machine sizes and limits, and how to fix a failed build."
+keywords: ["build", "framework detection", "build command", "start command", "port", "build failed", "lockfile", "out of memory"]
+---
+
+Instant Cloud builds your app from source with Instantpack, its build system. It looks at your project, installs dependencies, runs the build command and packages the result, so you don't write a `Dockerfile` or any build configuration.
+
+## Supported frameworks
+
+Instant recognises the framework from the files in your app's root directory.
+
+| Language | Detected from | Frameworks |
+| --- | --- | --- |
+| JavaScript and TypeScript | `package.json` | Next.js, Nuxt, Astro, Remix, SvelteKit, Gatsby, Angular, NestJS, Hono, Fastify, Express, Vite, React, Vue, or plain Node.js |
+| Python | `manage.py`, `requirements.txt`, `pyproject.toml` | Django, FastAPI, Flask, or plain Python |
+| PHP | `artisan`, `composer.json` | Laravel, or plain PHP |
+| Go | `go.mod` | Go |
+| Rust | `Cargo.toml` | Rust |
+| Static site | `index.html` | Plain HTML, CSS and JavaScript |
+
+For JavaScript projects, the package manager comes from the `packageManager` field or the lockfile: npm, pnpm, Yarn or Bun.
+
+## Build and start commands
+
+When `package.json` has `build` and `start` scripts, Instant uses them. You can set your own commands when you create the app, or later in **Settings** > **Build**:
+
+- **Root directory**: where the app lives in the repository or upload.
+- **Build command**: for example `npm run build`.
+- **Start command**: for example `npm run start`.
+
+Changes apply on the next deployment.
+
+## The port your app listens on
+
+Your app must listen on `0.0.0.0` and on the port in the `PORT` environment variable. Instant sets `PORT` to `80` unless you set it yourself in the app's variables.
+
+After a deployment starts the app, it has **5 minutes** to start listening. If it doesn't, the new version is stopped and the deployment fails, while the previous version keeps serving. The check only needs the port to be open; it doesn't call any URL.
+
+<Warning>
+  A server that listens only on `localhost` or `127.0.0.1` can't receive traffic. For example, run `php artisan serve --host=0.0.0.0 --port=$PORT` rather than `php artisan serve`.
+</Warning>
+
+## Build machine and limits
+
+Builds run on a separate build machine, so they never slow down your live app.
+
+- The default machine has 2 vCPU and 4 GB of memory. In **Settings** > **Build**, under **Build machine**, you can pick a smaller one, which costs less, or on Hobby and Pro a larger one, up to 8 vCPU and 12 GB. The change applies on the next build.
+- A build can run for up to 10 minutes.
+- Builds are charged by the second while they run, not while they wait in the queue. See [Plans and billing](/account/billing#usage-rates).
+- Instant keeps a build cache for each app, so later builds can reuse downloaded dependencies.
+
+## When a build fails
+
+The version that's live keeps serving, and the deployment is marked **Failed**. Open it to see the build log and where it stopped.
+
+When Instant recognises the problem in the log, the deployment shows a **Suggested fix** card:
+
+| Problem | Fix |
+| --- | --- |
+| Bun's lockfile is frozen and out of date | Applied for you: select **Apply fix and redeploy**. |
+| A private npm package can't be downloaded | Add an `NPM_TOKEN` variable with a read-only token, then redeploy. The card does this for you. |
+| `package-lock.json`, `pnpm-lock.yaml` or `yarn.lock` doesn't match `package.json` | Run `npm install`, `pnpm install` or `yarn install` locally and commit the updated lockfile. |
+| The build ran out of memory | Choose a larger build machine, or reduce the memory the build needs. |
+
+Other messages you may see:
+
+| Message | What to do |
+| --- | --- |
+| Couldn't clone the repository | Check that the branch exists and that the Instant GitHub app still has access to the repository. |
+| The build took longer than its time limit | Speed up the build, or choose a larger build machine. |
+| The app didn't start listening on port … within 5 minutes | Make sure the start command runs a server on `0.0.0.0` and the `PORT` port. |
+| The app stopped while starting | The app exited. Its output in the deployment log shows why. |
+
+If a build fails because of a problem on Instant's side, the deployment says so and its build charge is refunded automatically. Try again a few minutes later.

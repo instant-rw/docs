@@ -1,0 +1,79 @@
+---
+title: "Deploy without Git"
+description: "Ship the code on your computer to Instant Cloud without a GitHub repository: drag it into the dashboard or run instant deploy from your terminal."
+keywords: ["deploy without git", "upload", "local deploy", "instant deploy", "zip", "drag and drop"]
+---
+
+Instant Cloud can build code that isn't in a GitHub repository. You upload your project from the dashboard or the CLI, and Instant builds it exactly as it builds a commit: it detects the framework, runs the build and start commands, and serves the result over HTTPS.
+
+## From the dashboard
+
+<Steps>
+  <Step title="Create an application">
+    Open **Applications** and select **New application**.
+  </Step>
+  <Step title="Add your project">
+    Drag your project folder or a `.zip` of it onto **Upload a folder**. Instant reads the files in your browser and shows the detected framework and commands.
+  </Step>
+  <Step title="Deploy">
+    Choose a region and size, add variables under **Environment**, and select **Deploy**.
+  </Step>
+</Steps>
+
+To ship a new version later, open the app and choose **Upload new version**. It goes live once the build passes.
+
+## From the terminal
+
+<Steps>
+  <Step title="Sign in">
+    Install the [CLI](/cli/overview) and run `instant login`.
+  </Step>
+  <Step title="Deploy your project">
+    ```sh
+    cd my-project
+    instant deploy
+    ```
+
+    The first time, the CLI offers to create a new app or link an existing one, and saves the choice in `.instant/project.json`.
+  </Step>
+  <Step title="Follow the build">
+    The CLI streams the build log and prints the app's address when it is live. Add `--detach` to return as soon as the deployment starts.
+  </Step>
+</Steps>
+
+To deploy another directory to a named app, run `instant deploy ./site --app my-site`. Add `-m "Fix header"` to attach a note to the deployment.
+
+You can also create the app first with `instant apps create my-app --upload`, then run `instant link my-app` in your project.
+
+## What gets uploaded
+
+Your project is packed into a compressed archive before upload. These are always left out:
+
+- `.git`, `node_modules`, `.instant` and `.DS_Store`
+- `.env` and `.env.*` files, except `.env.example`
+- anything matched by a `.gitignore` or `.instantignore` file, in any directory
+
+`.instantignore` uses the same syntax as `.gitignore`. Use it for large files the build doesn't need.
+
+Because `.env` files are never uploaded, set secrets as environment variables, in the dashboard or with `instant env set`.
+
+<Note>
+  An upload can be up to 100 MB once compressed. If yours is larger, Instant lists the biggest files so you can add them to `.instantignore`.
+</Note>
+
+## Upload apps and GitHub apps
+
+An app created from an upload has no repository behind it, so it deploys only when you upload. A GitHub app deploys on every push, and you can still upload to it.
+
+| | Upload app | GitHub app |
+| --- | --- | --- |
+| Created with | **Upload a folder** in the dashboard, or `instant apps create <name> --upload` | **Import a repository** in the dashboard, or `instant apps create <name> --repo owner/repo` |
+| Deploys on every push | No | Yes |
+| `instant deploy` | Uploads and deploys your project | Uploads and deploys your project, alongside push deploys |
+| `instant deploy --git` | Rebuilds the last upload | Deploys the latest commit on the branch without uploading |
+
+## Rollbacks and retention
+
+Run `instant deployments` to list deployments and `instant rollback <deployment>` to deploy an earlier one again. Rolling back an uploaded deployment rebuilds the code stored with it.
+
+Uploads are kept for 30 days. The upload behind the version that is currently live is always kept, however old it is. An upload older than 30 days that isn't live can no longer be rolled back to.

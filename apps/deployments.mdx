@@ -1,0 +1,56 @@
+---
+title: "Deployments"
+description: "Follow an Instant Cloud deployment from queued to live, understand each status, cancel or redeploy a build, and roll back to an earlier version without downtime."
+keywords: ["deployment", "rollback", "redeploy", "cancel", "zero downtime", "deployment status"]
+---
+
+A deployment is one build of your app from a specific commit or upload. Instant Cloud starts the new version alongside the current one and only moves traffic once it's running, so a deploy never takes your app offline, and a failed one never replaces a working one.
+
+## Deployment statuses
+
+| Status | Meaning |
+| --- | --- |
+| **Queued** | Waiting to start, for example behind another deployment of the same app. |
+| **Building** | Instant is building your code. |
+| **Deploying** | The new version is starting and must begin listening on its port. |
+| **Live** | This version is serving traffic. |
+| **Unhealthy** | This version is live but keeps crashing or stopped listening on its port. |
+| **Failed** | The build or the start failed. The previous version is still serving. |
+| **Cancelled** | Someone cancelled it before it went live. |
+| **Superseded** | A newer deployment replaced it. |
+
+The **Deployments** page lists every deployment with its trigger (a push, a manual deploy, an upload, a redeploy or an applied fix), and lets you filter by app, branch and status. Each deployment's page shows how long each stage took, its full log and, for a failure, why it failed.
+
+## Start a deployment
+
+Deployments start on their own when you push to the production branch or upload new code. To start one yourself:
+
+- select **Deploy** on the app's **Deployments** page to deploy the latest commit,
+- select **Upload new version** on an upload app's overview, or
+- run `instant deploy` (upload) or `instant deploy --git` (latest commit or last upload).
+
+## Cancel a deployment
+
+A deployment that is queued, building or deploying can be cancelled from its page with **Cancel build**. Production isn't affected. From the terminal, run `instant cancel <deployment>`.
+
+## Redeploy
+
+**Redeploy** builds the same commit again with the app's current variables and settings. Use it after changing variables, or to retry after a platform error. It replaces the live version once the build passes.
+
+## Roll back
+
+To go back to an earlier version, select **Roll back** on the live deployment's card, or run `instant rollback <deployment>`.
+
+A rollback builds that deployment's code again from source, with the app's **current** variables and size, and then moves your domains to it. Like any deployment, it only goes live once it's running.
+
+For an app deployed from uploads, the uploaded code is kept for 30 days. Older uploads can't be rolled back to; deploy the code again instead.
+
+## Compare deployments
+
+Open a deployment and choose **Compare with live**, or use the **Compare** tab, to see what changed between two deployments.
+
+## Restarts and crashes
+
+If your app crashes, Instant restarts it automatically after a short delay. If it keeps crashing, its deployment is marked **Unhealthy** and its events show why, for example running out of memory or a crash with an exit code. When it recovers, it returns to **Live**.
+
+If your app runs out of memory, give it more under [Scaling](/apps/scaling).

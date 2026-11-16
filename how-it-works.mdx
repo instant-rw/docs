@@ -1,0 +1,72 @@
+---
+title: "How Instant works"
+description: "The building blocks of Instant Cloud: organizations, apps, deployments, databases, buckets and credits, and what happens between your code and a live address."
+keywords: ["how it works", "concepts", "deployment", "build", "organization", "credits", "private network"]
+---
+
+Instant Cloud turns your source code into a running web app, and runs the databases and storage it needs next to it. This page explains the pieces you'll work with and what happens when you deploy.
+
+## The building blocks
+
+<Columns cols={2}>
+  <Card title="Organization" icon="building">
+    Everything you create belongs to an organization: apps, databases, buckets, domains, API tokens and the bill. You can belong to several organizations and switch between them in the dashboard or the CLI.
+  </Card>
+  <Card title="App" icon="window">
+    A web service built from one source: a GitHub repository or code you upload. An app has its own settings (build and start commands, size, region), environment variables, domains and deployment history.
+  </Card>
+  <Card title="Deployment" icon="rocket">
+    One build of your code, from a specific commit or upload. Deployments stay in the app's history with their logs, so you can compare them and roll back.
+  </Card>
+  <Card title="Database" icon="database">
+    A managed PostgreSQL, MySQL or Redis server with backups and metrics. It runs on Instant's private network, next to your apps.
+  </Card>
+  <Card title="Bucket" icon="bucket">
+    S3-compatible object storage for uploads, media and exports. Use it with the AWS SDKs, the AWS CLI or any S3 tool.
+  </Card>
+  <Card title="Credits" icon="coins">
+    Usage is priced in credits. Each plan includes credits every month, and what your apps, databases and buckets use is counted against them.
+  </Card>
+</Columns>
+
+## From code to a live address
+
+Every deployment goes through the same stages, whether it starts from a push, an upload, the CLI or an AI agent.
+
+<Steps>
+  <Step title="Source">
+    Instant fetches the commit from GitHub, or the archive you uploaded.
+  </Step>
+  <Step title="Build">
+    Instant detects the framework and language, installs dependencies and runs the build command. You don't write a `Dockerfile` or any build config. See [Builds](/deploy/builds).
+  </Step>
+  <Step title="Start">
+    The new version starts with your environment variables and has 5 minutes to begin listening on its port. Until it does, the previous deployment keeps serving traffic.
+  </Step>
+  <Step title="Live">
+    Traffic moves to the new version on the app's `instant.rw` address and every custom domain, over HTTPS.
+  </Step>
+</Steps>
+
+If any stage fails, the live version is not touched. The deployment's log shows where it stopped and, for problems Instant recognises, how to fix it.
+
+## Connecting apps to data
+
+Databases and buckets run on a private network shared with your apps. When you connect one to an app, Instant writes its connection details into the app's environment variables, such as `DATABASE_URL` or `S3_ENDPOINT`, and redeploys the app. Your code reads those variables; there is nothing to configure by hand.
+
+## Ways to work with Instant
+
+<Columns cols={2}>
+  <Card title="Dashboard" icon="gauge" href="https://instant.rw/dashboard">
+    Create and manage everything in the browser.
+  </Card>
+  <Card title="MCP server" icon="robot" href="/agents/overview">
+    Let Claude, ChatGPT, Cursor or Codex work on your apps.
+  </Card>
+  <Card title="CLI" icon="terminal" href="/cli/overview">
+    Deploy and manage apps from your terminal and CI.
+  </Card>
+  <Card title="API" icon="code" href="/api/overview">
+    Automate anything over HTTPS.
+  </Card>
+</Columns>

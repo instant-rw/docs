@@ -1,9 +1,10 @@
 ---
-title: "API"
-description: "Base URL, authentication, organization, errors and rate limits of the Instant Cloud API."
+title: "API overview"
+sidebarTitle: "Introduction"
+description: "Call the Instant Cloud REST API over HTTPS: base URL, bearer authentication, choosing an organization, error codes and the 600 requests per minute rate limit."
 ---
 
-The API is JSON over HTTPS. Everything the dashboard, the CLI and the [MCP tools](/agents/tools) do with apps, deployments, databases, buckets and domains goes through it.
+The Instant Cloud API is JSON over HTTPS. It covers what the CLI and the [MCP tools](/agents/tools) do with apps, deployments, databases, buckets and domains, so anything you can ask an agent to do, you can also script.
 
 | | |
 | --- | --- |
@@ -37,12 +38,12 @@ A failed request returns a status code and a body like this:
   "error": {
     "code": "payment_required",
     "message": "The Free plan's credits are used up. Upgrade or add credit to continue.",
-    "dashboardUrl": "https://app.instant.rw/dashboard/billing"
+    "dashboardUrl": "https://instant.rw/dashboard/billing"
   }
 }
 ```
 
-`dashboardUrl` is included when the fix is in the dashboard, such as billing. The message is written for people and is safe to show as is.
+`dashboardUrl` is included when the fix is in the dashboard, such as billing. `message` is written for people, so you can show it to your users as it is.
 
 | Code | Meaning |
 | --- | --- |
@@ -60,4 +61,4 @@ A failed request returns a status code and a body like this:
 
 ## API reference
 
-The pages under Reference are generated from the OpenAPI document. Each operation's ID is also the name of its [MCP tool](/agents/tools).
+The pages under **Reference** are generated from the OpenAPI document. Each operation's ID is also the name of its [MCP tool](/agents/tools).

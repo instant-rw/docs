@@ -1,47 +1,96 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Put your first app live on Instant Cloud in a few minutes, from a GitHub repository, from your terminal with the CLI, or by asking your AI agent."
+keywords: ["quickstart", "first deploy", "github", "instant deploy", "getting started"]
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+This guide takes an app from your code to a live HTTPS address on Instant Cloud. You need an Instant account: log in at [instant.rw/login](https://instant.rw/login) with GitHub or your email, and your account is created the first time. New organizations start on the Free plan.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+Pick the way you want to deploy. All three end with the same app in your dashboard.
 
-## Prerequisites
+<Tabs>
+  <Tab title="Dashboard">
+    <Steps>
+      <Step title="Create an application">
+        In the [dashboard](https://instant.rw/dashboard), open **Applications** and select **New application**.
+      </Step>
+      <Step title="Choose your code">
+        Under **Import a repository**, select **Connect GitHub** and install the Instant GitHub app on the account or organization that owns the repository. Then pick the repository.
 
-Before you begin, you must have:
+        No repository? Drag your project folder or a `.zip` onto **Upload a folder** instead. See [Deploy without Git](/deploy/without-git).
+      </Step>
+      <Step title="Check the settings">
+        Instant detects the framework and fills in the build and start commands. Choose a region and a size, and open **Environment** to add any variables your app needs.
+      </Step>
+      <Step title="Deploy">
+        Select **Deploy** and follow the build log. When the build passes, the app is live at `<app-name>.instant.rw`.
+      </Step>
+    </Steps>
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
+    From now on, every push to the production branch deploys automatically.
+  </Tab>
+  <Tab title="CLI">
+    <Steps>
+      <Step title="Install the CLI">
+        ```sh
+        curl -fsSL https://instant.rw/install.sh | sh
+        ```
 
-## Get started
+        On Windows, or to install with npm, see [CLI](/cli/overview#install).
+      </Step>
+      <Step title="Sign in">
+        ```sh
+        instant login
+        ```
 
-<Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+        Your browser opens. Check that the code matches and approve it.
+      </Step>
+      <Step title="Deploy your project">
+        ```sh
+        cd my-project
+        instant deploy
+        ```
 
-    ```bash
-    npm install your-package
-    ```
-  </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+        The first time, the CLI offers to create a new app or link an existing one. It then uploads your code, streams the build log and prints the live address.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="AI agent">
+    <Steps>
+      <Step title="Connect your agent">
+        Add Instant to Claude, ChatGPT, Cursor, Codex or another MCP client with the URL `https://mcp.instant.rw/mcp`. See [Connect a client](/agents/connect) for each one.
+      </Step>
+      <Step title="Sign in and allow access">
+        Your client opens Instant in the browser. Sign in, choose the organization and select **Full access** so the agent can deploy.
+      </Step>
+      <Step title="Ask it to deploy">
+        For example:
 
-    ```bash
-    your-cli init
-    ```
-  </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+        > Deploy my GitHub repository acme/shop on Instant, add a PostgreSQL database for it and tell me the address when it's live.
 
-    ```bash
-    your-cli start
-    ```
-  </Step>
-</Steps>
+        The agent creates the app, starts the deployment and reads the build log if anything fails. To deploy from GitHub, the Instant GitHub app must be installed on the repository's account; for code that isn't on GitHub, the agent runs `instant deploy` with the [CLI](/cli/overview).
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## If the build fails
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+Open the deployment in the dashboard. The log shows where the build stopped, and when Instant recognises the problem, such as a lockfile that doesn't match or a missing registry token, a **Suggested fix** card explains it. See [Builds](/deploy/builds#when-a-build-fails). Your previous deployment keeps serving traffic until a new one passes, so fix the code and deploy again.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Add a database" icon="database" href="/data/databases">
+    Create PostgreSQL, MySQL or Redis and connect it to your app. Instant writes `DATABASE_URL` for you.
+  </Card>
+  <Card title="Use your own domain" icon="globe" href="/deploy/domains">
+    Add a domain on a paid plan, create the DNS records Instant shows you, and HTTPS follows.
+  </Card>
+  <Card title="Deploy without Git" icon="laptop" href="/deploy/without-git">
+    Ship code straight from your computer, from the dashboard or the terminal.
+  </Card>
+  <Card title="Work with AI agents" icon="sparkles" href="/agents/overview">
+    See what an agent can and cannot do on your account.
+  </Card>
+</Columns>

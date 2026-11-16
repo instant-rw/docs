@@ -1,53 +1,54 @@
 ---
-title: "AI agents"
-description: "Let an AI client deploy and manage your Instant Cloud apps, with an organization and an access level you choose."
+title: "MCP server"
+sidebarTitle: "Overview"
+description: "Let Claude, ChatGPT, Cursor or Codex deploy, debug and scale your Instant Cloud apps, in one organization, with the access level you choose."
+keywords: ["ai agents", "mcp", "claude", "chatgpt", "cursor", "codex", "model context protocol"]
 ---
 
-Instant Cloud has an MCP server. An AI client such as Claude Code, Cursor or Codex connects to it and can then work with your apps, databases, buckets and domains from a chat or an editor.
+Instant Cloud has an MCP server, so AI clients such as Claude, ChatGPT, Cursor and Codex can work with your apps, databases, buckets and domains. Ask in plain words, for example "why did my last deploy fail?", and the agent reads the logs, explains the problem and, with your permission, fixes it.
 
-The server is at `https://mcp.instant.rw/mcp` and uses Streamable HTTP.
+The server URL is `https://mcp.instant.rw/mcp`. Your client signs in through the browser, so there is no key to copy. See [Connect a client](/agents/connect) for each client's setup.
 
 ## What an agent can do
 
-With Full access an agent can:
+You choose one of two access levels when you connect.
 
-- deploy, roll back, scale, pause and resume apps
-- change app settings and environment variables, including removing a variable
-- create databases, buckets and domains, and connect databases and buckets to apps
-- take database backups
-- read logs, metrics and usage
+<Columns cols={2}>
+  <Card title="Full access" icon="pen">
+    Deploy, roll back, scale, pause and resume apps. Change settings and environment variables. Create databases, buckets and domains and connect them to apps. Take database backups.
+  </Card>
+  <Card title="Read only" icon="eye">
+    See apps, deployments, databases, buckets, logs, metrics and usage. Secret values stay hidden, and database queries run in a read-only transaction.
+  </Card>
+</Columns>
 
-With Read only it can see apps, deployments, databases, buckets, logs, metrics and usage. Secret variable values stay hidden. SQL an agent runs through `query_database` always runs in a read-only transaction.
+The [tool reference](/agents/tools) lists every tool and the access it needs.
 
-See the [tool reference](/agents/tools) for every tool.
+## What an agent can never do
 
-## What an agent cannot do
+No connection can delete apps, databases, buckets or domains, restore backups, change the plan, make payments, or manage members and API tokens. These actions stay in the [dashboard](https://instant.rw/dashboard), where a person makes them.
 
-No connection can delete apps, databases, buckets or domains, restore backups, change the plan, pay, or manage members or API tokens. These stay in the dashboard at [app.instant.rw](https://app.instant.rw).
-
-## How sign-in works
+## How connecting works
 
 <Steps>
   <Step title="Add Instant to your client">
-    Follow the [setup for your client](/agents/connect). You only need the server URL.
+    Follow the [setup for your client](/agents/connect). All it needs is the server URL.
   </Step>
-  <Step title="Sign in in the browser">
-    The client opens a page on Instant. Sign in if you are not already.
+  <Step title="Sign in">
+    The client opens Instant in your browser. Sign in if you aren't already.
   </Step>
-  <Step title="Choose an organization and access">
-    Pick the one organization the connection works in, and either Full access or Read only. To use another organization, connect again.
+  <Step title="Choose the organization and access">
+    Pick the organization the connection works in, then **Full access** or **Read only**, and select **Allow**. To work in another organization, connect again.
   </Step>
 </Steps>
 
-## Disconnect a client
+## Review and disconnect
 
-Open the dashboard, go to AI agents, then Connect, then Connected. Each connection is listed there. Disconnect it and it stops working immediately.
+Every change an agent makes appears in the organization's **Audit log** with the client that made it, so you can tell an agent's change from a person's.
 
-## Audit log
-
-Changes made through a connection appear in the organization's audit log with the client that made them, so you can tell an agent's change from a person's.
+To remove a connection, open **AI agents** in the dashboard, find it under **Connected** and select **Disconnect**. It stops working immediately.
 
 ## Other ways to give an agent access
 
-- An [API token](/api/tokens) works for clients that cannot sign in with OAuth, and for CI.
-- The [CLI](/cli/overview) works for agents that run shell commands, and every command can print JSON.
+- Agents that run shell commands, such as Claude Code, Codex and Cursor, can also use the [CLI](/cli/overview). Every command can print JSON.
+- Clients that can't sign in through a browser, and CI jobs, can use an [API token](/api/tokens).

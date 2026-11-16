@@ -1,12 +1,11 @@
 ---
-title: "Tool reference"
-description: "Every tool an AI agent can call on Instant, grouped by area, with what it does and whether it needs full access."
+title: "Tools"
+description: "Every tool an AI agent can call on Instant Cloud, grouped by apps, deployments, variables, domains, databases and storage, with the access each one needs."
 ---
 
-An agent connected to Instant sees these tools. Tools marked read work with both access levels. Tools marked write need Full access. Each tool is also an operation in the [API](/api/overview), where the tool name is the operation ID.
+An agent connected to Instant Cloud can call the tools below. Tools marked read work with both access levels; tools marked write need **Full access**. Each tool is also an [API](/api/overview) operation, and the tool name is its operation ID.
 
-The agent can only act in the organization you chose when you connected. Deleting apps, databases, buckets and domains, restoring backups, changing the plan, paying, and managing members or tokens are not available as tools.
-
+An agent only acts in the organization you chose when you connected. Deleting apps, databases, buckets and domains, restoring backups, changing the plan, payments, and managing members or tokens are not available as tools.
 
 ## Account and organization
 
@@ -21,7 +20,7 @@ The agent can only act in the organization you chose when you connected. Deletin
 
 | Tool | What it does | Access |
 | --- | --- | --- |
-| `list_apps` | Apps in the organization with their URL, status, source (a GitHub repository or uploaded folders) and latest deployment. | read |
+| `list_apps` | Apps in the organization with their URL, status, source (a GitHub repository or an upload) and latest deployment. | read |
 | `get_app` | One app: URL, domains, size, build settings, source and its latest deployment. | read |
 | `create_app` | Creates an app. | write |
 | `update_app` | Renames an app or changes how it is built: branch, root directory, build and start commands, and whether pushes deploy automatically. | write |
@@ -38,9 +37,9 @@ The agent can only act in the organization you chose when you connected. Deletin
 | `list_deployments` | An app's deployments, newest first, with status, commit or upload, and why a failed one failed. | read |
 | `get_deployment` | One deployment's status and timing. | read |
 | `cancel_deployment` | Stops a deployment that is still queued, building or deploying. | write |
-| `rollback_app` | Deploys an earlier deployment's code again (its commit, or its uploaded folder). | write |
+| `rollback_app` | Deploys an earlier deployment's code again (its commit or its upload). | write |
 | `get_build_logs` | The deployment's log: build output, then the app's output while it started. | read |
-| `get_build_fix` | For a failed deployment, what Instant recognised in the log (a missing variable, a wrong start command, a lockfile problem…) and how to fix it. | read |
+| `get_build_fix` | For a failed deployment, what Instant recognised in the log (an out-of-date lockfile, a missing registry token, a missing variable, running out of memory…) and how to fix it. | read |
 | `get_runtime_logs` | What the running app printed, newest last, across all its instances. | read |
 | `get_app_metrics` | CPU (cores), memory (MB), network (bytes per second) and restarts for an app over a window, with its limits. | read |
 
@@ -90,4 +89,4 @@ The agent can only act in the organization you chose when you connected. Deletin
 - `get_database_credentials` returns connection strings and the password, so it needs Full access and is recorded in the audit log. To give an app a database, an agent uses `connect_database`, which does not show the string.
 - `list_variables` hides secret values. Showing them needs Full access and is recorded in the audit log.
 - `query_database` runs one read-only statement in a read-only transaction and returns up to 200 rows.
-- Local folder uploads and live log streams are not tools. Use [`instant deploy`](/cli/deploy-a-folder) for folders, and `get_build_logs` or `get_runtime_logs` for logs.
+- Uploading code from your computer and streaming live logs are not tools. Agents that can run commands use [`instant deploy`](/deploy/without-git) to upload, and `get_build_logs` or `get_runtime_logs` to read logs.

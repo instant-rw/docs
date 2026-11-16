@@ -1,0 +1,83 @@
+---
+title: "Storage"
+description: "Store files in Instant Cloud buckets with any S3 SDK or tool: create a bucket, connect it to your app, manage access keys, make it public and set CORS."
+keywords: ["object storage", "s3", "bucket", "uploads", "files", "access keys", "cors", "aws sdk"]
+---
+
+Instant Cloud buckets store files such as user uploads, images and exports. They speak the S3 API, so the AWS SDKs, the AWS CLI, rclone and other S3 tools work with them. You pay for what you store; requests and downloads are free.
+
+## Create a bucket
+
+Open **Storage** and select **New bucket**.
+
+- **Name**: 3 to 63 lowercase letters, numbers and dashes. Bucket names are unique across all of Instant.
+- **Visibility**: **Private** (only keys and connected apps can read it) or **Public** (anyone with a link can read files).
+- **Storage limit**: optional. Uploads stop when the bucket reaches it. Your plan sets the largest limit.
+
+Next, choose the apps that should use the bucket, or skip this step.
+
+```sh
+instant buckets create my-uploads --connect my-app
+```
+
+## Connect a bucket to an app
+
+Each connected app gets its own access key, and Instant writes these variables into the app:
+
+| Variable | Value |
+| --- | --- |
+| `S3_ENDPOINT` | `https://s3.instant.rw` |
+| `S3_REGION` | `auto` |
+| `S3_BUCKET` | The bucket's name |
+| `S3_ACCESS_KEY_ID` | The app's key ID |
+| `S3_SECRET_ACCESS_KEY` | The app's secret key, stored as a secret |
+
+Choose **Read and write** or **Read only** access, and change the variable prefix if your app expects other names. Keep **Redeploy after connecting** on so the app picks them up.
+
+Use path-style addressing in your S3 client:
+
+```js upload.js
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+
+const s3 = new S3Client({
+  endpoint: process.env.S3_ENDPOINT,
+  region: process.env.S3_REGION,
+  forcePathStyle: true,
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  },
+});
+
+await s3.send(new PutObjectCommand({
+  Bucket: process.env.S3_BUCKET,
+  Key: "avatars/user-42.png",
+  Body: file,
+}));
+```
+
+The bucket's **Access keys** page has the same example for Python and the AWS CLI.
+
+## Access keys for other tools
+
+To use a bucket from outside Instant, such as a backup script or a desktop client, create a key on the **Access keys** page with **Create key**. Choose **Read only** (list and download) or **Read and write** (also upload, overwrite and delete).
+
+The secret is shown when you create the key, and every later reveal is logged. Deleting a key cuts off whoever uses it right away.
+
+## Public buckets
+
+Files in a public bucket can be read by anyone at `https://<bucket>.storage.instant.rw/<file>`. Switch a bucket between **Private** and **Public** in its **Settings**. A private bucket's files need a key or a signed link.
+
+## Upload from the browser (CORS)
+
+If your web pages upload to or read from the bucket directly, add their origins in **Settings** > **Browser origins (CORS)**, one per line, such as `https://app.example.com`. Use `*` to allow every origin. You can list up to 20.
+
+## Browse files in the dashboard
+
+The bucket's **Files** page lists its contents. Upload files by dragging them onto the page or with **Upload**, create folders, search, and delete files.
+
+## Pricing
+
+Storage is charged for the bytes stored, at the [usage rate](/account/billing#usage-rates) for object storage. Requests and egress are free. The bucket's storage limit counts toward your plan's total storage.
+
+If an organization runs out of credits, its buckets become read-only until it's sorted out. See [When credits run out](/account/billing#when-credits-run-out).

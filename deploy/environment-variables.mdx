@@ -1,0 +1,47 @@
+---
+title: "Environment variables"
+description: "Add environment variables and secrets to an Instant Cloud app, import a .env file, connect databases and buckets, and apply changes with a redeploy."
+keywords: ["environment variables", "env", "secrets", ".env", "DATABASE_URL", "config"]
+---
+
+Environment variables hold your app's configuration and secrets: API keys, feature flags, connection strings. Instant passes them to your app while it builds and while it runs, and stores every value encrypted.
+
+## Add variables
+
+Open the app's **Environment** page.
+
+- **Add variable** adds one. Paste `KEY=value` into the key field to fill both at once.
+- **Import** or **Paste a .env** adds many at once, merging with or replacing what's there.
+- **Edit as .env** opens all variables as text. Keys you delete from the text are removed after you confirm.
+
+Keys use capital letters, digits and underscores, and can't start with a digit, like `API_KEY`. Values can't be empty. When you paste a `.env` file, comment lines and `export` prefixes are ignored and quotes around values are removed.
+
+From the terminal, use `instant env set KEY=value` or `instant env push .env`. See [CLI commands](/cli/commands#environment-variables).
+
+## Secrets
+
+A variable marked **Secret** is hidden in the dashboard, the CLI and the API. New variables are secret by default. Every reveal of a secret's value is recorded in the [audit log](/account/organizations#audit-log). Through the CLI, the API or an AI agent, revealing needs full access.
+
+Secrets reach your app exactly like other variables. The difference is only who can see them.
+
+## Apply changes
+
+Variable changes apply on the **next deployment**. Until then, changed variables appear under **Not live**, and a banner offers **Redeploy** so you can apply them straight away.
+
+Removing a variable also waits for the next deployment: the running version keeps it until then.
+
+## Variables from databases and buckets
+
+When you connect a database or a bucket, Instant writes its connection details into the app's variables and can redeploy the app for you.
+
+| Resource | Variables |
+| --- | --- |
+| PostgreSQL or MySQL | `DATABASE_URL` |
+| Redis | `REDIS_URL` |
+| Bucket | `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` |
+
+You can rename them when you connect. Select **Connect resource** on the **Environment** page, or see [Databases](/data/databases) and [Storage](/data/storage).
+
+## Variables Instant sets
+
+Instant sets `PORT` to `80` unless you set it yourself. Your app must listen on that port. See [Builds](/deploy/builds#the-port-your-app-listens-on).

@@ -1,0 +1,52 @@
+---
+title: "Scaling"
+description: "Choose vCPU and memory for an Instant Cloud app, add replicas to share traffic, and pause an app so it stops costing anything until you resume it."
+keywords: ["scaling", "replicas", "vcpu", "memory", "pause", "resume", "size"]
+---
+
+Each app runs as one or more replicas, and every replica gets the same vCPU and memory. You choose the size, and how many replicas share the traffic, in the app's **Settings** > **Compute**.
+
+## Size
+
+| Setting | Options |
+| --- | --- |
+| **vCPU per replica** | 0.25, 0.5, 1, 2, 4, 8 or 12 |
+| **Memory per replica** | 512 MB, 1 GB, 2 GB, 4 GB, 8 GB, 12 GB or 16 GB |
+
+New apps start with 0.25 vCPU and 512 MB. Your plan sets the largest size you can choose and the total for the organization. See [Plans and billing](/account/billing#plans).
+
+A size change applies on the next deployment. After saving, select **Redeploy** to apply it straight away.
+
+## Replicas
+
+Add replicas with the **Replicas** control to share traffic across several copies of your app. Replica changes apply immediately, without a redeploy.
+
+| Plan | Replicas per app |
+| --- | --- |
+| Free | 1 |
+| Hobby | Up to 2 |
+| Pro | Up to 3 |
+
+Each replica is charged for its own vCPU and memory, and counts toward your plan's total.
+
+AI agents can change size and replicas with the [`scale_app` tool](/agents/tools#apps), and scripts with the [API](/api/overview).
+
+## Pause and resume
+
+Pausing stops all of an app's replicas. Its address goes offline, and **billing stops while it's paused**. Its variables, domains and deployments are kept.
+
+1. Open **Settings** > **General** and select **Pause** under **Pause application**.
+2. Optionally turn on **Resume automatically**, so the next push to the production branch starts it again.
+3. Confirm with **Pause application**.
+
+To start it again, select **Resume** on the same page. It serves its last deployment. Resuming needs credits and room on your plan.
+
+A paused app can't be deployed until you resume it.
+
+<Note>
+  If an organization runs out of credits, Instant pauses its apps itself. They show **Paused by billing** and resume once billing is sorted out. See [When credits run out](/account/billing#when-credits-run-out).
+</Note>
+
+## Regions
+
+You choose the region when you create an app. It can't be changed afterwards.

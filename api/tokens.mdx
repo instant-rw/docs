@@ -1,27 +1,27 @@
 ---
 title: "API tokens"
-description: "Create a token for CI, scripts and MCP clients that cannot sign in with a browser."
+description: "Create an Instant Cloud API token for CI, scripts and MCP clients that cannot sign in through a browser, use it with the CLI or the API, and revoke it."
 ---
 
-An API token lets a script or CI job use the CLI, the API or the MCP server without a browser sign-in.
+An API token lets a script, a CI job or an MCP client use the CLI, the API or the MCP server without signing in through a browser.
 
 ## Create a token
 
 <Steps>
-  <Step title="Open AI agents">
-    In the dashboard, go to AI agents, then API tokens, then Create token.
+  <Step title="Open Developer settings">
+    In the dashboard, go to **Settings** > **Developer** and select **Create token**.
   </Step>
   <Step title="Set the name, access and expiry">
-    Name the token after where it is used, such as `github-actions`. Choose Full access or Read only. Choose an expiry of 7, 30, 90 or 365 days, or never.
+    Name the token after where it will be used, such as `github-actions`. Choose **Full access** or **Read only**, and an expiry of 7, 30, 90 or 365 days, or never.
   </Step>
   <Step title="Copy the token">
-    The token starts with `inst_` and is shown once. Store it as a secret right away.
+    The token starts with `inst_` and is shown only once. Store it as a secret right away.
   </Step>
 </Steps>
 
 ## What a token can do
 
-A token acts as the person who created it, in the one organization they created it in. Full access can change things. Read only can only read. Like an [MCP connection](/agents/overview), a token cannot delete apps, databases, buckets or domains, restore backups, change the plan, pay, or manage members or tokens.
+A token acts as the person who created it, in the organization it was created in. **Full access** can make changes; **Read only** can only read. Like an [MCP connection](/agents/overview), a token can never delete apps, databases, buckets or domains, restore backups, change the plan, make payments, or manage members and tokens.
 
 A token stops working when it expires, when it is revoked, or when its creator leaves the organization.
 
@@ -42,32 +42,10 @@ curl https://api.instant.rw/v1/apps \
 
 `instant login --token inst_…` stores a token on your own computer instead.
 
-## Deploy from GitHub Actions
+## Use a token in CI
 
-Add the token as a repository secret named `INSTANT_TOKEN`, then:
-
-```yaml
-name: Deploy
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm i -g instant-cloud
-      - run: instant deploy --app my-app --yes
-        env:
-          INSTANT_TOKEN: ${{ secrets.INSTANT_TOKEN }}
-```
-
-The token needs Full access to deploy. See [Deploy a folder](/cli/deploy-a-folder) for what is uploaded.
+To deploy from GitHub Actions or another CI service, store the token as a secret named `INSTANT_TOKEN` and run `instant deploy`. [Scripts and CI](/cli/scripts-and-ci) has a complete GitHub Actions workflow.
 
 ## Revoke a token
 
-In AI agents, then API tokens, revoke the token. It stops working at once. Members revoke their own tokens. Owners and admins can revoke any token in the organization.
+In **Settings** > **Developer**, select **Revoke** next to the token. It stops working at once. Members can revoke their own tokens; owners and admins can revoke any token in the organization.

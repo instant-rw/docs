@@ -1,0 +1,47 @@
+---
+title: "Logs and metrics"
+description: "Read build and runtime logs for an Instant Cloud app, stream them live, and watch CPU, memory, network and restarts over time to spot problems early."
+keywords: ["logs", "runtime logs", "build logs", "metrics", "cpu", "memory", "monitoring", "events"]
+---
+
+Instant Cloud keeps three views of what your app is doing: build logs for each deployment, runtime logs from the running app, and metrics for its CPU, memory and network. Open them from the app's **Logs** and **Metrics** pages.
+
+## Build logs
+
+The **Build** tab on the **Logs** page shows the full log of a deployment: the build output, then your app's own output while it started. Pick a deployment from the list. A running build streams line by line.
+
+You can filter lines, copy the log or download it. When a deployment failed, the page shows the stage where it stopped and links to the suggested fix, if there is one.
+
+```sh
+instant logs --build <deployment>
+```
+
+## Runtime logs
+
+The **Runtime** tab shows everything your app writes to standard output and standard error, from every replica, as it happens.
+
+- **Pause** stops the stream so you can read; **Go live** resumes it.
+- Filter by level (errors, warnings, info), HTTP status, method, path or slow requests, or search the messages.
+- **Show earlier lines** loads older lines, and you can copy or download what's on screen.
+
+Runtime logs are kept for up to 7 days. Very long lines are shortened.
+
+```sh
+instant logs -f
+```
+
+## Metrics
+
+The **Metrics** page charts **CPU**, **Memory**, **Network in** and **Network out** over the last 1 hour, 6 hours, 24 hours, 7 days or 30 days. CPU and memory charts show your app's limit, so you can see how close it is to running out. If the app restarted in the window, the page says how many times.
+
+```sh
+instant metrics --window 24h
+```
+
+## Events
+
+The **Events** page lists what happened to the running app: out-of-memory restarts, crashes, health changes, certificate updates and deployments. The **Activity** page shows changes people made: variables, settings, domains and deploys.
+
+## Ask an AI agent
+
+A connected [AI agent](/agents/overview) can read the same logs and metrics, for example: "Why did my-app restart last night? Check its logs and memory."

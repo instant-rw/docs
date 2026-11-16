@@ -1,0 +1,67 @@
+---
+title: "Organizations"
+description: "How Instant Cloud organizations hold your apps, databases and billing, how to invite members as admins or members, transfer ownership and read the audit log."
+keywords: ["organization", "team", "members", "roles", "invite", "audit log", "owner", "admin"]
+---
+
+An organization holds everything you run on Instant Cloud: apps, databases, buckets, domains, API tokens, the plan and the bill. Each organization is separate, so a client project or a side project can have its own resources and invoices.
+
+## Your first organization
+
+Log in at [instant.rw/login](https://instant.rw/login) with GitHub or with a code sent to your email. Logging in for the first time creates your account, and Instant creates an organization for you with you as its owner.
+
+To create another one, open the organization switcher at the top of the sidebar and select **Create organization**. Give it a name and a slug (lowercase letters, numbers and hyphens). The new organization becomes active right away.
+
+Switch between organizations from the same menu. In the CLI, use `instant switch <org>` or `--org <org>`.
+
+## Roles
+
+| Role | Can do |
+| --- | --- |
+| Owner | Everything, including transferring ownership and deleting the organization. |
+| Admin | Manage apps, databases and storage, plus members, billing and the audit log. |
+| Member | Manage apps, databases and storage. |
+
+Each organization has one owner. Everyone in the organization can see the member list.
+
+## Invite members
+
+<Info>
+  Inviting members needs the Pro plan. See [Plans and billing](/account/billing).
+</Info>
+
+<Steps>
+  <Step title="Open Members">
+    In the dashboard, go to **Settings** > **Members** and select **Invite people**.
+  </Step>
+  <Step title="Add their emails">
+    Enter up to 20 email addresses and choose **Admin** or **Member** for them.
+  </Step>
+  <Step title="They accept">
+    Each person gets an email with a link to join. The link expires after 2 days; select **Invite again** under **Invitations** to send a new one.
+  </Step>
+</Steps>
+
+Owners and admins can change a member's role or remove them from **Members**.
+
+## Transfer ownership
+
+Only the owner can do this, and the organization needs at least one other member.
+
+Go to **Settings** > **General**, find **Transfer ownership** in the danger zone, choose the new owner and select **Transfer**. You stay in the organization as an admin.
+
+An owner can't leave the organization or delete their account until someone else is the owner.
+
+## Audit log
+
+The audit log records who did what in the organization: sign-ins, member changes, deployments and rollbacks, revealed secrets, domain, database and storage changes, billing events, API tokens and AI agent connections. Changes made by an AI agent or an API token show which client made them.
+
+Owners and admins can open it under **Settings** > **Audit log**, filter and search it, and export up to 5,000 rows as CSV. Entries are kept for 180 days.
+
+## Delete an organization
+
+Only the owner can delete an organization, from **Settings** > **General**. First:
+
+- delete its apps, databases and buckets,
+- switch to the Free plan and let the paid plan end,
+- pay anything the organization owes.

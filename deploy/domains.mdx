@@ -1,0 +1,69 @@
+---
+title: "Domains"
+description: "Use your app's free instant.rw address or add your own domain to Instant Cloud: the DNS records to create, verification, automatic HTTPS and the production domain."
+keywords: ["custom domain", "dns", "cname", "a record", "https", "ssl", "certificate", "subdomain"]
+---
+
+Every Instant Cloud app gets a free address under `instant.rw`, such as `my-app.instant.rw`, with HTTPS from the start. On a paid plan you can also serve it from your own domain, and Instant issues and renews the certificate for you.
+
+## Your app's instant.rw address
+
+The address comes from the app's name. If that name is taken, Instant adds a short suffix. You can add more `instant.rw` subdomains to an app on any plan: they're live in a few seconds and need no DNS setup.
+
+## Add a custom domain
+
+<Info>
+  Custom domains are available on the Hobby and Pro plans. See [Plans and billing](/account/billing).
+</Info>
+
+<Steps>
+  <Step title="Add the domain">
+    Open **Domains** and select **Add domain**, or use the **Domains** tab of an app. Choose the app, select **Custom domain**, enter the hostname, such as `shop.example.com`, and select **Continue**.
+  </Step>
+  <Step title="Create the DNS records">
+    Instant shows the records to create at your DNS provider, and detects common providers such as Cloudflare, GoDaddy, Namecheap and Route 53 to show provider-specific steps. Copy each record exactly.
+  </Step>
+  <Step title="Wait for verification">
+    Instant checks the records every minute and marks each one **Found** when it sees it. Select **Check now** to check straight away. When both records are found, the domain is verified and the certificate is requested.
+  </Step>
+</Steps>
+
+From the terminal, `instant domains add shop.example.com` prints the same records.
+
+### The DNS records
+
+Each domain needs two records: one that proves you own it, and one that sends its traffic to Instant.
+
+| Domain | Records |
+| --- | --- |
+| Subdomain, such as `shop.example.com` or `www.example.com` | A `CNAME` record for `shop` pointing at Instant, and a `TXT` record named `_verify.shop` |
+| Root domain, such as `example.com` | `A` records for `@` pointing at Instant's addresses, and a `TXT` record named `_verify` |
+
+The exact values are shown in the dashboard. Each hostname is a separate domain, so to serve both `example.com` and `www.example.com`, add both.
+
+<Tip>
+  On Cloudflare, set the routing record to **DNS only** (grey cloud) until the domain is verified. Cloudflare's CNAME flattening also works for root domains.
+</Tip>
+
+Instant keeps checking a new domain automatically for 7 days. After that, select **Check now** once your records are in place.
+
+## HTTPS certificates
+
+Once a domain is verified, Instant requests its certificate. This usually takes about a minute. Certificates renew automatically before they expire.
+
+| Status | Meaning |
+| --- | --- |
+| **Waiting for DNS** | The records aren't found yet. |
+| **Certificate issuing** | The domain is verified and the certificate is being requested. |
+| **Ready** | The domain serves your app over HTTPS. |
+| **Certificate failed** | The certificate couldn't be issued, usually because the domain no longer points at Instant. Fix the records and select **Retry now**. |
+
+Each domain's certificate page shows when it was issued, when it expires and its renewal history. Owners and admins get a notification if issuing or renewing fails.
+
+## Production domain
+
+One domain per app is its production domain, the main address shown for the app. To change it, open the domain's menu and choose **Set as production**. Only verified domains can be the production domain, and it can't be removed until another domain takes its place.
+
+## Remove a domain
+
+Open the domain's menu and choose **Remove domain**, then type the domain to confirm. Traffic to it stops right away. You can then delete its DNS records at your provider.

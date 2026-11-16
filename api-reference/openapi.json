@@ -20,7 +20,7 @@
       "bearer": {
         "type": "http",
         "scheme": "bearer",
-        "description": "An access token from `instant login` or an API token (inst_\u2026)."
+        "description": "An access token from `instant login` or an API token (inst_…)."
       }
     }
   },
@@ -297,7 +297,7 @@
       "get": {
         "operationId": "list_apps",
         "summary": "List apps",
-        "description": "Apps in the organization with their URL, status, source (a GitHub repository or uploaded folders) and latest deployment.",
+        "description": "Apps in the organization with their URL, status, source (a GitHub repository or an upload) and latest deployment.",
         "x-access": "read",
         "parameters": [
           {
@@ -373,7 +373,7 @@
       "post": {
         "operationId": "create_app",
         "summary": "Create an app",
-        "description": "Creates an app. With source `github` (the default) it builds `repository` on every push to `branch`, and the first deploy starts at once. With source `upload` there is no repository: deploy a local folder by running `instant deploy` in it (the Instant CLI). Every app gets an HTTPS URL on its own subdomain. Build and start commands are detected from the code when left out.",
+        "description": "Creates an app. With source `github` (the default) it builds `repository` on every push to `branch`, and the first deploy starts at once. With source `upload` there is no repository: deploy code from your computer by running `instant deploy` in the project's directory (the Instant CLI). Every app gets an HTTPS URL on its own subdomain. Build and start commands are detected from the code when left out.",
         "x-access": "write",
         "parameters": [],
         "requestBody": {
@@ -409,7 +409,7 @@
                     "maxLength": 255
                   },
                   "rootDirectory": {
-                    "description": "Folder of the app inside the repository, for monorepos",
+                    "description": "Directory of the app inside the repository, for monorepos",
                     "type": "string",
                     "maxLength": 255
                   },
@@ -432,13 +432,13 @@
                         "type": "number",
                         "minimum": 0.25,
                         "maximum": 48,
-                        "description": "vCPUs for each instance: 0.25, 0.5, 1, 2\u2026"
+                        "description": "vCPUs for each instance: 0.25, 0.5, 1, 2…"
                       },
                       "memoryMb": {
                         "type": "integer",
                         "minimum": 256,
                         "maximum": 49152,
-                        "description": "Memory for each instance in MB: 512, 1024\u2026"
+                        "description": "Memory for each instance in MB: 512, 1024…"
                       },
                       "replicas": {
                         "default": 1,
@@ -1095,7 +1095,7 @@
       "post": {
         "operationId": "deploy_app",
         "summary": "Deploy an app",
-        "description": "Starts a deployment and returns at once; follow it with get_deployment or get_build_logs. A GitHub app builds the head of its branch, or `commit` when given. An app without a repository rebuilds its last uploaded folder. To deploy local files, run `instant deploy` in the project folder instead (the Instant CLI uploads them).",
+        "description": "Starts a deployment and returns at once; follow it with get_deployment or get_build_logs. A GitHub app builds the head of its branch, or `commit` when given. An app without a repository rebuilds its last upload. To deploy local files, run `instant deploy` in the project's directory instead (the Instant CLI uploads them).",
         "x-access": "write",
         "parameters": [
           {
@@ -1122,16 +1122,16 @@
                     "pattern": "^[0-9a-f]{7,40}$"
                   },
                   "uploadId": {
-                    "description": "Set by the CLI after uploading a folder",
+                    "description": "Set by the CLI after uploading the code",
                     "type": "string"
                   },
                   "message": {
-                    "description": "Shown instead of a commit message for an uploaded folder",
+                    "description": "Shown instead of a commit message for an upload",
                     "type": "string",
                     "maxLength": 500
                   },
                   "git": {
-                    "description": "Git state of an uploaded folder, sent by the CLI",
+                    "description": "Git state of the uploaded code, sent by the CLI",
                     "type": "object",
                     "properties": {
                       "sha": {
@@ -1303,8 +1303,8 @@
     "/apps/{app}/uploads": {
       "post": {
         "operationId": "create_upload",
-        "summary": "Upload a folder",
-        "description": "Returns a URL to PUT a gzipped tarball of a project folder to (at most 100 MB). Then call deploy_app with the upload's id. The CLI does both for you.",
+        "summary": "Upload source code",
+        "description": "Returns a URL to PUT a gzipped tarball of the project's source to (at most 100 MB). Then call deploy_app with the upload's id. The CLI does both for you.",
         "x-access": "write",
         "parameters": [
           {
@@ -1407,7 +1407,7 @@
       "get": {
         "operationId": "get_deployment",
         "summary": "Get a deployment",
-        "description": "One deployment's status and timing. Status moves queued \u2192 building \u2192 deploying \u2192 active; failed carries a reason and message. Poll it every 10\u201320 seconds while a deploy runs.",
+        "description": "One deployment's status and timing. Status moves queued → building → deploying → active; failed carries a reason and message. Poll it every 10–20 seconds while a deploy runs.",
         "x-access": "read",
         "parameters": [
           {
@@ -1574,7 +1574,7 @@
       "get": {
         "operationId": "get_build_fix",
         "summary": "Get fix suggestions for a failed build",
-        "description": "For a failed deployment, what Instant recognised in the log (a missing variable, a wrong start command, a lockfile problem\u2026) and how to fix it. Empty when nothing known matched; then read get_build_logs.",
+        "description": "For a failed deployment, what Instant recognised in the log (a missing variable, a wrong start command, a lockfile problem…) and how to fix it. Empty when nothing known matched; then read get_build_logs.",
         "x-access": "read",
         "parameters": [
           {
@@ -1730,7 +1730,7 @@
       "post": {
         "operationId": "rollback_app",
         "summary": "Roll back an app",
-        "description": "Deploys an earlier deployment's code again (its commit, or its uploaded folder). Find one with list_deployments.",
+        "description": "Deploys an earlier deployment's code again (its commit or its upload). Find one with list_deployments.",
         "x-access": "write",
         "parameters": [
           {
@@ -3285,7 +3285,7 @@
       "post": {
         "operationId": "query_database",
         "summary": "Run a read-only SQL query",
-        "description": "Runs one SELECT, SHOW, EXPLAIN or WITH \u2026 SELECT on a PostgreSQL or MySQL database and returns up to 200 rows. It runs in a read-only transaction, so it cannot change data or the schema: make changes through the app's migrations.",
+        "description": "Runs one SELECT, SHOW, EXPLAIN or WITH … SELECT on a PostgreSQL or MySQL database and returns up to 200 rows. It runs in a read-only transaction, so it cannot change data or the schema: make changes through the app's migrations.",
         "x-access": "read",
         "parameters": [
           {
