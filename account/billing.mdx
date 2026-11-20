@@ -1,16 +1,16 @@
 ---
 title: "Plans and billing"
-description: "Compare the Free, Hobby and Pro plans, see how usage is charged in credits, what happens when credits run out, and how to pay with a card or mobile money."
-keywords: ["pricing", "plans", "credits", "billing", "free plan", "hobby", "pro", "mobile money", "invoice"]
+description: "Compare the Starter, Hobby and Pro plans, see how usage is charged in credits, what happens when credits run out, and how to pay with a card or mobile money."
+keywords: ["pricing", "plans", "credits", "billing", "starter", "hobby", "pro", "card", "mobile money", "invoice"]
 ---
 
 Instant Cloud charges for what you run, in credits. One credit is worth RWF 1. Every plan includes a set of credits each month, and your apps, databases, buckets and builds draw on them as they run. The [pricing page](https://instant.rw/pricing) has an estimator if you want to work out a monthly cost.
 
 ## Plans
 
-| | Free | Hobby | Pro |
+| | Starter | Hobby | Pro |
 | --- | --- | --- | --- |
-| Price per month | RWF 0 | RWF 12,000 | RWF 42,000 |
+| Price per month | RWF 5,000 | RWF 12,000 | RWF 42,000 |
 | Credits included each month | 5,000 | 12,000 | 42,000 |
 | Total for the organization | 4 vCPU, 4 GB memory, 5 GB storage | 12 vCPU, 16 GB memory, 50 GB storage | 24 vCPU, 64 GB memory, 200 GB storage |
 | Largest app instance or database | 0.5 vCPU, 512 MB memory, 1 GB storage | 4 vCPU, 8 GB memory, 20 GB storage | 12 vCPU, 16 GB memory, 100 GB storage |
@@ -22,7 +22,9 @@ Instant Cloud charges for what you run, in credits. One credit is worth RWF 1. E
 
 There is no limit on the number of apps, databases or buckets. Plans limit the total size of what you run instead. Storage counts database disks and bucket quotas.
 
-Included credits reset at the start of each period and don't roll over. The Free plan's monthly credits go to one Free organization per person: the oldest one you own.
+Included credits reset at the start of each period and don't roll over.
+
+There is no free plan. An organization needs a plan to create apps, databases and buckets and to deploy, so a new organization starts by choosing one in **Billing**. If its plan ends, what is running pauses after 48 hours, as described in [When credits run out](#when-credits-run-out), until you choose a plan again.
 
 ## Usage rates
 
@@ -42,26 +44,28 @@ A stopped database is charged for its disk only, and a paused app costs nothing.
 
 Owners and admins change the plan in **Billing**.
 
-- **Upgrading** from Free starts after checkout. Moving from Hobby to Pro starts immediately, and you pay the difference for the rest of the period.
-- **Downgrading**, including moving to Free, takes effect at the end of the current period. Nothing is charged.
+- **Starting a plan** goes through checkout.
+- **Upgrading** starts immediately, and you pay the difference for the rest of the period.
+- **Downgrading** takes effect at the end of the current period. Nothing is charged.
+- **Cancelling**: select **Cancel Starter**, **Cancel Hobby** or **Cancel Pro** below the plans. The plan runs to the end of the period you paid for, and nothing is charged after it.
 
 ## When credits run out
 
 What happens depends on how the plan is paid.
 
 <Tabs>
-  <Tab title="Hobby or Pro, paid by card">
+  <Tab title="Paid by card">
     Everything keeps running. Usage beyond the included credits is added to your next invoice, and owners and admins get a notice when that starts.
 
-    Each plan has a limit on what can be owed: RWF 25,000 on Hobby and RWF 50,000 on Pro. Past it, what is running keeps running, but new resources, deploys and restarts wait until you add credit.
+    Each plan has a limit on what can be owed: RWF 5,000 on Starter, RWF 25,000 on Hobby and RWF 50,000 on Pro. Past it, what is running keeps running, but new resources, deploys and restarts wait until you add credit.
   </Tab>
-  <Tab title="Free, or paid with mobile money">
+  <Tab title="Paid with mobile money, or no plan">
     1. Owners and admins are warned when about 72 hours, and again 24 hours, of credit are left. You can also set your own alert in **Billing**.
-    2. When credits run out, everything keeps running for 48 hours.
+    2. When credits run out, or the organization has no plan, everything keeps running for 48 hours.
     3. After that, apps are paused, databases are stopped and buckets become read-only.
     4. If nothing is paid within 14 days, the app containers are removed, **database data is deleted** and bucket contents are deleted. Warning emails go out on day 7 and day 13. App, domain and database settings are kept.
 
-    Add credit or upgrade at any point to restore everything. On Free, next month's credits also pay off what is owed first.
+    A period paid with mobile money is restored by adding credit. Without a plan, choosing one restores everything.
   </Tab>
 </Tabs>
 
@@ -70,7 +74,7 @@ If a card renewal fails, the plan keeps running while the card is retried. After
 ## Pay and add credit
 
 - **Plans** are paid monthly by card. Invoices and receipts are under **Billing** > **Payments**.
-- **Credit** is added with **Add credit** in **Billing**, using MTN Mobile Money or Airtel Money, from RWF 1,000. You approve the payment on your phone. Credit you add pays off anything owed first.
+- **Credit** is added with **Add credit** in **Billing**: by card from RWF 7,500, or with MTN Mobile Money or Airtel Money from RWF 1,000. A card payment opens a secure checkout; a mobile money payment is approved on your phone. Credit you add pays off anything owed first.
 - **Bank transfer** may also be offered for amounts from RWF 20,000. Put the reference shown on your transfer so it can be matched.
 
 Only owners and admins can change the plan, pay invoices and add credit.
@@ -80,3 +84,5 @@ Only owners and admins can change the plan, pay invoices and add credit.
 - **Redeem a code:** in **Billing**, select **Redeem code** and enter it. Some codes add credit that expires.
 - **Referrals:** share your link from **Settings** > **Referrals**. When a friend's organization pays its first plan invoice, both of you receive credit.
 - **Student credits:** students at supported universities can verify their student email under **Settings** > **Student credits** to add credit to an organization they own or manage.
+
+Credit from codes, referrals and student programs is used alongside a plan, after its included credits.
