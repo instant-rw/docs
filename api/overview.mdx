@@ -36,8 +36,8 @@ A failed request returns a status code and a body like this:
 ```json
 {
   "error": {
-    "code": "payment_required",
-    "message": "The Free plan's credits are used up. Upgrade or add credit to continue.",
+    "code": "plan_limit",
+    "message": "Choose a plan to create and deploy apps, databases and storage.",
     "dashboardUrl": "https://instant.rw/dashboard/billing"
   }
 }
@@ -51,7 +51,7 @@ A failed request returns a status code and a body like this:
 | `unauthorized` | The credential is missing, expired or revoked |
 | `payment_required` | The organization is out of credits |
 | `forbidden` | The credential's access does not allow this |
-| `plan_limit` | The plan's limit is reached |
+| `plan_limit` | The organization has no plan, or the plan's limit is reached |
 | `not_found` | The resource does not exist in this organization |
 | `conflict` | The resource is in a state that does not allow this |
 | `too_large` | The request or upload is over the size limit |
